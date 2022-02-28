@@ -1,0 +1,69 @@
+---
+title: "Chapter 3 - The Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "27/02/2022"
+output: html_document
+---
+
+# Exercise 6
+
+Upload packages 
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::wage2
+attach(data)
+```
+
+**Use the data set in WAGE2.RAW for this problem. As usual, be sure all of the following**
+**regressions contain an intercept.**
+
+**(i) Run a simple regression of IQ on educ to obtain the slope coefficient, say, $\tilde{\delta}$**
+
+```{r}
+
+lm1<-lm(data$IQ~data$educ)
+
+summary(lm1)
+
+```
+The coefficient $\tilde{\delta}$ is equal to 3.53.  
+
+**(ii) Run the simple regression of log(wage) on educ, and obtain the slope coefficient, $\tilde{\beta}_1$.**
+
+```{r}
+
+lm2<-lm(data$lwage~data$educ)
+
+summary(lm2)
+```
+The $\tilde{\beta}_1$ is equal to 0.05.
+
+**(iii) Run the multiple regression of log(wage) on educ and IQ, and obtain the**
+**slope coefficients, $\tilde{\beta}_1$ and $\tilde{\beta}_2$ , respectively.**
+
+```{r}
+lm3<-lm(data$lwage~data$educ+data$IQ)
+
+summary(lm3)
+```
+The $\tilde{\beta}_1$ and $\tilde{\beta}_2$ are equal to 0.03 and 0.005, respectively.
+
+**(iv) Verify that $\tilde{\beta}_1=\hat{\beta}_1+\hat{\beta}_2\tilde{\delta}_1$.**
+
+Given the estimated coefficientes, we have that
+
+$$0.03+0.005(3.53)=0.05$$
+
+
+Hence, the equality is satisfied.
+
