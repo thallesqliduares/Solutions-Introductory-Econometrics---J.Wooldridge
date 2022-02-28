@@ -1,0 +1,78 @@
+---
+title: "Chapter 3 - Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "16/02/2022"
+output: html_document
+---
+
+# Exercise 3.2
+
+Upload packages
+
+```{r, warning=FALSE, message= FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::hprice1
+
+attach(data)
+
+```
+**Use the data in HPRICE1.RAW to estimate the model**
+
+$$price=\beta_0+\beta_1sqrft+\beta_2bedrms+\varepsilon$$
+**where price is the house price measured in thousands of dollars.**
+
+**(i) Write out the results in equation form.**
+
+```{r}
+
+lm1<-lm(price~sqrft+bdrms)
+
+summary(lm1)
+
+```
+
+The estimated equation is given by $$price=-19.31+0.12sqrft+15.19bdrms$$
+
+**(ii) What is the estimated increase in price for a house with one more bedroom, holding**
+**square footage constant?**
+
+For each additional bedroom, the price of the house increases \$15.2, _ceteris paribus_.
+
+**(iii) What is the estimated increase in price for a house with an additional bedroom that**
+**is 140 square feet in size? Compare this to your answer in part (ii).**
+
+For a house with `sqrft=140` and an additional bedroom, the price is 
+
+$$price=-19.31+0.12\times(140)+15.19 \times (1)=12.68$$
+Hence, in this case, the estimated house price is $12,680.
+
+**(iv) What percentage of the variation in price is explained by square footage and number**
+**of bedrooms?**
+
+This measure is given by R-Squared. Hence, is this case 63.1\% of variability in house price is explained by these variables.
+
+**(v) The first house in the sample has sqrft = 2,438 and bdrms = 4. Find the predicted**
+**selling price for this house from the OLS regression line.**
+
+Substituing theses values in estimated equation, we obtain 
+
+$$price=-19.31+0.12\times(2438)+15.2\times(4)=334.05$$
+
+Hence, in this case, the estimated house price is $334,050.
+
+**(vi) The actual selling price of the first house in the sample was $300,000 (so price 5**
+**300). Find the residual for this house. Does it suggest that the buyer underpaid or**
+**overpaid for the house?**
+
+The residual is given by $\hat{\varepsilon}=price-\widehat{price}=300,00-334,05=-34,05$
+
+It means that, buyer overpaid by the house.
