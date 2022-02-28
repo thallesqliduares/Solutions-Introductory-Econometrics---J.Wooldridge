@@ -1,0 +1,84 @@
+---
+title: "Chapter 3 - Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "15/02/2022"
+output: html_document
+---
+
+# Exercise 3.1
+
+Upload package
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::bwght
+
+```
+
+
+
+
+**A problem of interest to health officials (and others) is to determine the effects of smoking during pregnancy on infant health**.
+**One measure of infant health is birth weight; a birth weight that is too low can put an infant at risk for contracting various illnesses**.
+**Since factors other than cigarette smoking that affect birth weight are likely to be correlated with smoking, we should take those **
+**factors into account. For example, higher income generally results in access to better prenatal care, as well as better nutrition for**
+**the mother. An equation that recognizes this is**
+
+$$bwght=\beta_0+\beta_1cigs+\beta_2faminc+\varepsilon$$
+
+**(i) What is the most likely sign for $\beta_2$?**
+
+As family income increase, the birth weight of children is expected to increase as well, ceteris paribus. Hence, the expected sign of
+$\beta_2$ is positive.
+
+**(ii) Do you think cigs and faminc are likely to be correlated? Explain why the correlation**
+**might be positive or negative.**
+
+There's a variety of factors that influence a people to smoke. The correlation between quantity of cigarrestes smoked and family's income
+might be positive or negative. Given that correlation does not imply causality, there's much more observable and unobservable factors that influence a people behavior in smoke or not smoke.
+
+**(iii) Now, estimate the equation with and without faminc, using the data in BWGHT**
+**.RAW. Report the results in equation form, including the sample size and**
+**R-squared. Discuss your results, focusing on whether adding faminc substantially**
+**changes the estimated effect of cigs on bwght.**
+
+Regression with `faminc`
+
+```{r}
+
+est1<-lm(data$bwght~data$cigs+data$faminc, data)
+
+summary(est1)
+
+
+```
+The estimated equation is given by $bwgth=116.97-0.46cigs+0.09faminc$.
+
+The sample size and R-Squared are 1387 and 2.9\%, respectively.
+
+The coefficients present the expected sign and are both statistically significant.
+
+For each smoked cigar, the weight of children lowers 0.46 pounds, _ceteris paribus_.
+
+For each $1 increase in family income, the weight increases 0.09 pounds, _ceteris paribus_.
+
+Now, the estimate without `faminc`.
+
+```{r}
+
+est2<-lm(data$bwght~data$cigs)
+
+summary(est2)
+
+```
+
+In this case, the coefficient associate to number of smoked cigs, is equal to -0.51. Impliyng in a little difference in relation to the first estimative.
