@@ -1,0 +1,78 @@
+---
+title: "Chapter 3 - The Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "17/02/2022"
+output: html_document
+---
+
+# Exercise 3.3
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::ceosal2
+
+attach(data)
+
+View(data)
+
+```
+
+
+
+**The file CEOSAL2.RAW contains data on 177 chief executive officers and can be used**
+**to examine the effects of firm performance on CEO salary**
+
+**(i) Estimate a model relating annual salary to firm sales and market value. Make the**
+**model of the constant elasticity variety for both independent variables. Write the**
+**results out in equation form.**
+
+```{r}
+
+lm1<-lm(log(salary)~log(sales)+log(mktval))
+
+summary(lm1)
+
+```
+The estimated equation is given by $$\widehat{log(salary)}=4.62+0.16log(sales)+0.10log(mktval)$$
+
+**(ii) Add profits to the model from part (i). Why can this variable not be included in**
+**logarithmic form? Would you say that these firm performance variables explain**
+**most of the variation in CEO salaries?**
+
+```{r}
+
+options(scipen=999) # To avoid scientific notation
+
+lm2<-lm(log(salary)~log(sales)+log(mktval)+profits)
+
+summary(lm2)
+
+```
+
+The variable `profits` cannot be added in log form, because there's negative values for this variable.
+
+Based on R-Squared, these variables explained only 29.9\% of variability in CEO Salary.
+
+**(iii) Add the variable ceoten to the model in part (ii). What is the estimated percentage**
+**return for another year of CEO tenure, holding other factors fixed?**
+
+```{r}
+
+lm3<-lm(log(salary) ~ log(sales) + log(mktval)+ceoten+I(ceoten^2))
+
+summary(lm3)
+
+```
+
+
