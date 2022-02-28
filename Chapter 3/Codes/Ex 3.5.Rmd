@@ -1,0 +1,59 @@
+---
+title: "Chapter 3 - The Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "22/02/2022"
+output: html_document
+---
+# Exercise 3.5
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::wage1
+
+attach(data)
+
+```
+
+**5. Confirm the partialling out interpretation of the OLS estimates by explicitly doing the**
+**partialling out for Example 3.2. This first requires regressing educ on exper and tenure**
+**and saving the residuals, $\hat{r}_1$ . Then, regress log(wage) on  $\hat{r}_1$. Compare the coefficient on $\hat{r}_1$ with the** **coefficient on educ in the regression of log(wage) on educ, exper, and tenure.**
+
+Firstly, estimating `educ` against `exper` and `tenure` and saving the residuals in the variable `res`.
+
+```{r}
+
+lm1<-lm(educ~exper+tenure)
+summary(lm1)
+
+res<-lm1$residuals
+```
+Now, I will regress `log(wage)` on `res` 
+
+```{r}
+
+lm2<-lm(log(wage)~res)
+
+summary(lm2)
+
+```
+
+Finally, in order to analyze the results with original model
+
+```{r}
+lm3<-lm(log(wage)~educ+exper+tenure)
+
+summary(lm3)
+```
+
+The both estimated coefficients of $\hat{r}_1$ and `educ` is equal to 0.092.
