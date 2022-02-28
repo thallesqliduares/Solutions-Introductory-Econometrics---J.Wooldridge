@@ -1,0 +1,113 @@
+---
+title: "Chapter 3 - The Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "21/02/2022"
+output: html_document
+---
+
+# Exercise 3.4
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(dplyr)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::attend
+
+attach(data)
+
+```
+**Use the data in ATTEND.RAW for this exercise.**
+**(i) Obtain the minimum, maximum, and average values for the variables atndrte, priGPA, and ACT.**
+
+The `min`, `max` and `mean` for the variable `atndrte` are given, respectively by
+
+```{r}
+
+atn_stat<-data %>%
+          summarise(minimum = min(atndrte),
+                    maximum = max(atndrte),
+                    mean_value = round(mean(atndrte, na.rm=TRUE),2))
+atn_stat
+
+```
+  
+  
+The `min`, `max` and `mean` for the variable `priGPA` are given, respectively by
+
+```{r}
+
+priGPA_stat<-data %>%
+          summarise(minimum = min(priGPA),
+                    maximum = max(priGPA),
+                    mean_value = round(mean(priGPA, na.rm=TRUE),2))
+
+priGPA_stat 
+
+```
+
+Finally, the `min`, `max` and `mean` for the variable `ACT` are given, respectively by
+
+```{r}
+
+ACT_stat<-data %>%
+          summarise(minimum = min(ACT),
+                    maximum = max(ACT),
+                    mean_value = round(mean(ACT, na.rm=TRUE),2))
+
+ACT_stat
+
+```
+
+
+**(ii) Estimate the model** 
+
+$$atndrte=\beta_0+\beta_1 priGPA+ \beta_2 ACT + u$$
+
+**and write the results in equation form. Interpret the intercept. Does it have a useful**
+**meaning?**
+
+```{r}
+
+lm1<-lm(atndrte~priGPA+ACT)
+
+summary(lm1)
+```
+
+The estimated equation is given by
+
+$$\widehat{atndrte}=75.7+17.2 priGPA - 1.71 ACT$$
+
+The intercept represents, the value of `atndrte` if `priGPA` and `ACT` are equal to zero, which not make pratical sense,
+given that students spent at least some time in studies.
+
+**Discuss the estimated slope coefficients. Are there any surprises?**
+
+Given the estimated coefficients, for a marginal variation in `priGPA` the percentual increase in `atndrte` is 17.2%, which makes sense from the theoretical point of view, given that students who frequent more classes, tends to perform better in exams. Otherwise, the coefficient associated to ACT, is -1.71, which not presents the expected sign, given that students with higher `ACT` tends to frequent more classes.
+
+**(iv) What is the predicted atndrte if priGPA = 3.65 and ACT = 20? What do you**
+**make of this result? Are there any students in the sample with these values of the**
+**explanatory variables?**
+
+substituting theses values in estimated equation, we obtain 
+
+$$\widehat{atndre}=75.7+17.2\times(3.65)-1.71 \times(20)=104.28$$
+This value doesnt make sense, as `atndre` is the percentual value for attended classes by some student.
+
+**(v) If Student A has priGPA = 3.1 and ACT = 21 and Student B has priGPA = 2.1**
+**and ACT = 26, what is the predicted difference in their attendance rates?**
+
+For student A: $\widehat{atndre}_{A}=75.7+17.2\times(3.1)-1.71 \times(21)=93.1$
+
+For Student B: $\widehat{atndre}_{B}=75.7+17.2\times(2.1)-1.71 \times(26)=67.4$
+
+Hence, the predicted difference is $\widehat{atndre}_{A}-\widehat{atndre}_{B}=93.1-67.4=25.7$
