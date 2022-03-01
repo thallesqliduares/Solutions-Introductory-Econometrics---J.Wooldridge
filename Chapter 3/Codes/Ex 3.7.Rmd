@@ -1,0 +1,81 @@
+---
+title: "Chapter 3 - The Multiple Regression Model - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "01/03/2022"
+output: html_document
+---
+
+# Exercise 3.7
+
+Upload packages
+
+```{r, message=FALSE, warning=FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+data<-wooldridge::meap93
+
+attach(data)
+```
+
+**Use the data in MEAP93.RAW to answer this question.**
+
+**(i) Estimate the model**
+
+$$math10=\beta_0+\beta_1log(expend)+\beta_2lnchprg+u$$
+**and report the results in the usual form, including the sample size and R-squared.**
+**Are the signs of the slope coefficients what you expected? Explain.**
+
+```{r}
+lm1<-lm(math10~lexpend+lnchprg)
+
+summary(lm1)
+```
+
+The estimated equation is given by $$math10=-20.36+6.22lexpend-0.30lnchprg$$
+
+The coefficient of `lexpend` has the expected sign, but the coefficient of `lnchprg`, similary to the example 2.12 
+still have negative sign. Hence, the problem of ommited variables might persists in this case.
+
+The variability in `math10` is just around 18% explaneid by this specific model. The sample size is equal to 408 observations.
+
+**(ii) What do you make of the intercept you estimated in part (i)? In particular, does**
+**it make sense to set the two explanatory variables to zero? [Hint: Recall that**
+**log(1)=0.]**
+
+
+The intercept represents the value of math exam if `lexpend` and `lnchprg` were equal to 0. In this case, 
+the estimated intercept is not statistically significant, cause a negative value for exam grade do not make sense.
+
+**(iii) Now run the simple regression of math10 on log(expend), and compare the slope**
+**coefficient with the estimate obtained in part (i). Is the estimated spending effect**
+**now larger or smaller than in part (i)?**
+
+```{r}
+lm2<-lm(math10~lexpend)
+
+summary(lm2)
+
+```
+Now, the coefficient is quite larger in relation to the multiple regression model. A difference of 4.94
+
+
+**(iv) Find the correlation between lexpend = log(expend) and lnchprg. Does its sign**
+**make sense to you?**
+
+```{r}
+cor(lexpend, lnchprg)
+```
+The correlation between these two variables is negative. Hence, if one increase, other decreases, what might explains 
+the obtained values in item (iii).
+
+
+
+
+
