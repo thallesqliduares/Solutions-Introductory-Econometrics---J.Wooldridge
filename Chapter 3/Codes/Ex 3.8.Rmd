@@ -1,0 +1,124 @@
+---
+title: "Chapter 3 - The Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "03/03/2022"
+output: html_document
+---
+# Exercise 3.8
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+library(lmreg)
+library(wooldridge)
+```
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::discrim
+
+attach(data)
+
+```
+
+**Use the data in DISCRIM.RAW to answer this question. These are zip code–level data**
+**on prices for various items at fast-food restaurants, along with characteristics of the zip**
+**code population, in New Jersey and Pennsylvania. The idea is to see whether fast-food**
+**restaurants charge higher prices in areas with a larger concentration of blacks.**
+
+**(i) Find the average values of `prpblck` and `income` in the sample, along with their**
+**standard deviations. What are the units of measurement of `prpblck` and `income`?**
+
+```{r}
+
+prpblck_avg<-round(mean(prpblck, na.rm=TRUE),2)
+
+prpblck_sd<-round(sd(prpblck, na.rm = TRUE),2)
+
+income_avg<-round(mean(income, na.rm=TRUE),2)
+
+income_sd<-round(sd(income, na.rm = TRUE),2)
+
+```
+
+The mean value and sd for `prpblck` is 0.11 and 0.18, respectively. Measured in percentual.
+
+The mean value and sd for `income` is $47,053.78 and $13,179.29, respectively. Measured in Dollars.
+
+**(ii) Consider a model to explain the price of soda, psoda, in terms of the proportion of**
+**the population that is black and median income:**
+
+$$psoda=\beta_0+\beta_1prpblck+\beta_2income+u$$
+
+**Estimate this model by OLS and report the results in equation form, including the**
+**sample size and R-squared. (Do not use scientific notation when reporting the estimates.)**
+**Interpret the coefficient on prpblck. Do you think it is economically large?**
+
+```{r}
+
+options(scipen=999) # To avoid scientific notation
+
+lm1<-lm(psoda~prpblck+income)
+
+summary(lm1)
+```
+The estimated equation is given by $$\widehat{psoda}=0.95+0.11prpblck+0.000001income$$
+
+The `R-Squared` and `Adjusted R-Squared` are equal to 6.4% and 5.9%, respectively.
+
+The sample size is equal to 401 observations.
+
+The coefficient of `prpblck` is equal to 0.11. Hence, the price medium of soda, increases $0.11 for each additional percent on proportion of black people.
+
+**(iii) Compare the estimate from part (ii) with the simple regression estimate from**
+**`psoda` on `prpblck`. Is the discrimination effect larger or smaller when you control**
+**for income?**
+
+```{r}
+lm2<-lm(psoda~prpblck)
+
+summary(lm2)
+```
+In this case, the estimated equation is given by $$\widehat{psoda}=1.03+0.06prpblck$$
+
+The discrimination effect is smaller when controlling for income.
+
+**(iv) A model with a constant price elasticity with respect to income may be more**
+**appropriate. Report estimates of the model**
+
+$$log(psoda)=\beta_0+\beta_1prpblck+\beta_2log(income)+u$$
+**If `prpblck` increases by .20 (20 percentage points), what is the estimated percentage**
+**change in psoda? (Hint: The answer is 2.xx, where you fill in the “xx.”)**
+
+```{r}
+lm3<-lm(data$lpsoda~prpblck+lincome)
+
+summary(lm3)
+```
+The estimated equation is given by $$\widehat{log(psoda)}=-0.79+0.12prpblck+0.07log(income)$$
+
+If `prpblck` increases by 20%, then the medium price of soda increases by $2.40.
+
+**(v) Now add the variable `prppov` to the regression in part (iv). What happens**
+**to $\hat{\beta}_{prpblck}$?**
+
+```{r}
+lm4<-lm(lpsoda~prpblck+lincome+prppov)
+
+summary(lm4)
+```
+In this case, the coefficient of `prpblck` reduces from 0.12 to 0.07.
+
+**(vi) Find the correlation between log(income) and prppov. Is it roughly what you**
+**expected?**
+
+```{r}
+cor(lincome, prppov, use="complete.obs")
+```
+Hence, there's a strong negative correlation between this two variables.
+
+**(vii) Evaluate the following statement: “Because log(income) and prppov are so highly** **correlated, they have no business being in the same regression.”**
+
+In econometric models, when two variables are high correlated, might cause bias in estimation process. However, in each specific case, the analyst must interpret if the inclusion of these variables are necessary for a efficient estimation process.
