@@ -1,0 +1,80 @@
+---
+title: "Chapter 3 - Multiple Regression Analysis - Estimation"
+author: "Thalles Quinaglia Liduares"
+date: "04/03/2022"
+output: html_document
+---
+
+# Exercise 3.9
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+library(lmreg)
+library(wooldridge)
+```
+
+Upload database
+
+```{r}
+data<-wooldridge::charity
+
+```
+
+
+**Use the data in CHARITY.RAW to answer the following questions**
+
+**(i) Estimate the equation** 
+
+$$gift=\beta_0+\beta_1mailsyear+\beta_2giftlast+\beta_3propresp+u$$
+
+
+**by OLS and report the results in the usual way, including the sample size and**
+**R-squared. How does the R-squared compare with that from the simple regression**
+**that omits `giftlast` and `propresp`?**
+
+```{r}
+lm1<-lm(gift~mailsyear+giftlast+propresp, data)
+
+summary(lm1)
+
+lm2<-lm(gift~mailsyear, data)
+
+summary(lm2)
+```
+
+The estimated equation is given by 
+$$\widehat{gift}=-4.55+2.16mailsyear+0.005giftlast+15.35propresp$$
+
+The variability in response variable `gift` is only 8.3% explained by the predictor variables.
+
+In the simple regression estimation this value was 1.3%. Hence, the inclusion of predictor variables 
+increases the predictability of the model.
+
+**(ii) Interpret the coefficient on `mailsyear`. Is it bigger or smaller than the corresponding**
+**simple regression coefficient?**
+
+The coefficient of `mailsyear` gives the marginal increase in the variable `gifts` for each additional
+mail sent. In the simple regression model this value is 2.64 against 2.14 in the multiple regression.
+
+**(iii) Interpret the coefficient on `propresp`. Be careful to notice the units of measurement**
+**of `propresp`.**
+
+This coefficient measures, for a marginal increase in the `propresp`, the variation in mountant of `gifts`.
+
+**(iv) Now add the variable `avggift` to the equation. What happens to the estimated effect**
+**of `mailsyear`?**
+
+```{r}
+lm3<-lm(gift~mailsyear+giftlast+propresp+avggift,data)
+
+summary(lm3)
+```
+
+In this case, the coefficient of `mailsyear` reduces from 2.16 to 1.20.
+
+**(v) In the equation from part (iv), what has happened to the coefficient on giftlast?**
+**What do you think is happening?**
+
+The sign of coefficient of the variable `giflast` changes from positive to negative. Indicating a possible negative effect
+of variable `giftlast` in a model with more exogenous variables.
