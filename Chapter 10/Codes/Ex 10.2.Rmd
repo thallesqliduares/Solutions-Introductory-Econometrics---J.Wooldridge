@@ -1,0 +1,88 @@
+---
+title: "Chapter 10 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "07/03/2022"
+output: html_document
+---
+
+
+# Exercise 10.2 
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(car)
+library(forecast)
+library(seastests)
+
+```
+Upload database
+
+```{r, message=FALSE, warning=FALSE}
+
+data1<-wooldridge::barium
+  
+```
+
+
+**Use the data in BARIUM.RAW for this exercise.**
+
+**(i) Add a linear time trend to equation (10.22). Are any variables, other than the**
+**trend, statistically significant?**
+
+```{r}
+lm1<-lm(lchnimp~lchempi+lgas+lrtwex+
+          befile6+affile6+afdec6+t, data1)
+
+summary(lm1)
+```
+
+In this case, the only variable statisticaly significant is the time trend, `t`, 
+at the 1% level.
+
+**(ii) In the equation estimated in part (i), test for joint significance of all variables**
+**except the time trend. What do you conclude?**
+
+```{r}
+
+# Vector of restriction to test if all coefficients but t are equal to zero 
+
+rest<-c("lchempi=0","lgas=0","lrtwex=0","befile6=0","affile6=0","afdec6=0" )
+
+car::linearHypothesis(lm1, rest)
+
+summary(lm1)$fstatistic
+```
+
+It´s not possible to reject the null hypothesis that coefficients are equal to 0
+because the p-value=0.77>0.05.
+
+**(iii) Add monthly dummy variables to this equation and test for seasonality.**
+**Does including the monthly dummies change any other estimates or their standard**
+**errors in important ways?**
+
+```{r}
+# Creating month dummies 
+
+data1[paste0("M", 1:12)] <- as.data.frame(t(sapply(data1$Month, tabulate, 12)))
+
+lm2<-lm(lchnimp~lchempi+lgas+lrtwex+
+          befile6+affile6+afdec6+feb+mar+apr+may+jun+jul+aug+
+          sep+oct+nov+dec, data1) 
+
+summary(lm2)
+```
+
+Implementation of seasonality test
+
+```{r}
+
+fried(data1$chnimp , freq = 12, diff = T, residuals = F, autoarima = T)
+
+isSeasonal(data1$chnimp,freq=12, test="combined")
+
+```
+According to above tests, the variable chinese imports (`chnimp`) do not show seasonality.
