@@ -1,0 +1,95 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "11/03/2022"
+output: html_document
+---
+
+# Exercise 4.2
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(car)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::lawsch85
+  
+```
+
+**Use the data in LAWSCH85.RAW for this exercise.**
+
+**(i) Using the same model as in Problem 4 in Chapter 3, state and test the null hypothesis**
+**that the rank of law schools has no ceteris paribus effect on median starting salary.**
+
+The hypothesis test on variable `rank` is stated as follows:
+
+$H_0: \beta_5 =0$ and $H_1: \beta_5 \neq 0$
+
+```{r}
+
+lm1<-lm(lsalary~LSAT+GPA+llibvol+lcost+rank, data)
+
+summary(lm1)
+
+```
+
+The estimated coefficient of variable `rank` has p-value<2e-16, so is statistically
+different from zero.
+
+**(ii) Are features of the incoming class of students—namely, `LSAT` and `GPA`—individually**
+**or jointly significant for explaining salary? (Be sure to account for missing data on `LSAT`**
+**and `GPA`.)**
+
+Indidually, `LSAT` do not show statistic significance in explaining the variable `salary`.
+
+But, for an unit increase `GPA` point, the `salary` increases by aproximately 24.7%, to the
+significance level of 1%.
+
+Now, testing the joint significance of `LSAT` and `GPA`.
+
+```{r}
+
+linearHypothesis(lm1, c("LSAT=0", "GPA=0"))
+
+
+```
+The p-value of statistic is less than 0.05, so the null hypothesis of restricted model is rejected
+to the 1% level of confidence.
+
+**(iii) Test whether the size of the entering class (clsize) or the size of the faculty**
+**(faculty) needs to be added to this equation; carry out a single test. (Be careful to**
+**account for missing data on clsize and faculty.)**
+
+```{r}
+
+lm2<-lm(lsalary~LSAT+GPA+llibvol+lcost+rank+faculty+clsize, data)
+
+summary(lm2)
+  
+```
+
+The inclusion of variables `faculty` and `clsize` shows that theses two variables
+are not statistically significant. I will proceed a test of joint significance, to analyse
+if in fact, these two variables are not good predictors of `salary`.
+
+```{r}
+linearHypothesis(lm2, c("faculty=0","clsize=0"))
+```
+
+In fact, the p-value of 0.39, reveals that these two variables probabily are equal to
+0 in estimated model.
+
+**(iv) What factors might influence the rank of the law school that are not included in**
+**the salary regression?**
+
+The variable `Age` of Law School, might influence the results, because older institutions
+have more reputation and tends to atract the better students.
