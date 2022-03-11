@@ -1,0 +1,84 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "10/03/2022"
+output: html_document
+---
+
+# Exercise 4.1
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(dplyr)
+library(wooldridge)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::vote1
+
+attach(data)
+
+```
+
+
+**The following model can be used to study whether campaign expenditures affect** 
+**election outcomes:**
+
+$$voteA=\beta_0+\beta_1log(expendA)+\beta_2log(expendB)+\beta_3prtystrA+u$$
+
+**where `voteA` is the percentage of the vote received by `Candidate A`, `expendA` and** 
+**`expendB` are campaign expenditures by Candidates A and B, and `prtystrA` is a measure**
+**of party strength for Candidate A (the percentage of the most recent presidential**
+**vote that went to A’s party).**
+
+**(i) What is the interpretation of $\beta_1$?**
+
+This case is known as level-log, and is the percentual variation in voteA, for a 
+unit increase in `log(expendA)`.
+
+**(ii) In terms of the parameters, state the null hypothesis that a 1% increase** 
+**in A’s expenditures is offset by a 1% increase in B’s expenditures.**
+
+ The null hypothesis is given by $H_0: \beta_{1}+\beta_{2}=0$ and alternative 
+ hypothesys by $H_1: \beta_{1}+\beta_{2} \neq 0$.
+ 
+**(iii) Estimate the given model using the data in VOTE1.RAW and report the results**
+**in usual form. Do A’s expenditures affect the outcome? What about B’s expenditures?**
+**Can you use these results to test the hypothesis in part (ii)?**
+
+```{r}
+lm1<-lm(voteA~log(expendA)+log(expendB)+prtystrA, data)
+
+summary(lm1)
+```
+
+
+The estimated model, is given by following equation 
+
+$$\widehat{voteA}=45.07+6.08log(expendA)-6.61log(expendB)+0.15prtystrA$$
+The $R^2$ indicates that 79.2% of variability in `voteA` is explaneid by exogenous
+variables.
+
+**(iv) Estimate a model that directly gives the t statistic for testing the hypothesis**
+**in part (ii). What do you conclude? (Use a two-sided alternative.)**
+
+```{r}
+
+
+data$expendA<--data$expendB
+
+lm2<-lm(voteA~expendA+expendB+prtystrA, data)
+
+summary(lm2)
+
+```
+The coefficient associated to `expendA` is statistically different from zero, as
+it's p-value<0.05.
