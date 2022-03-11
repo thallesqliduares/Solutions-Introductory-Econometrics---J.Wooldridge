@@ -1,0 +1,43 @@
+---
+title: "Chapter 10 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "11/03/2022"
+output: html_document
+---
+
+# Exercise 10.3
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE} 
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::prminwge
+
+```
+
+
+**Add the variable `log(prgnp)` to the minimum wage equation in (10.38). Is this variable**
+**significant? Interpret the coefficient. How does adding `log(prgnp)` affect the estimated**
+**minimum wage effect?**
+
+```{r}
+
+
+lm1<-lm(lprepop~lmincov+lusgnp+t+lprgnp, data)
+
+summary(lm1)
+
+```
+
+Yes, the coefficient associated to variable `lprgnp` is equal to 0.28 and has 
+statistical significance to the 1% level of confidence. So, for an increase
+of 1% in `lprgnp` the ` lprepop` increases 0.28%.
