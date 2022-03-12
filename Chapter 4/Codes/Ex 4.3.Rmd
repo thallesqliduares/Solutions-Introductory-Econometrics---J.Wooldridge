@@ -1,0 +1,55 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "12/03/2022"
+output: html_document
+---
+
+# Exercise 4.3
+
+Upload packages
+
+```{r}
+library(lmreg)
+library(wooldridge)
+```
+Upload database
+
+```{r}
+
+data<-wooldridge::hprice1
+
+```
+**Refer to Computer Exercise C2 in Chapter 3. Now, use the log of the housing price as the**
+**dependent variable:**
+
+(i) You are interested in estimating and obtaining a confidence interval for the percentage
+change in price when a 150-square-foot bedroom is added to a house. In decimal
+form, this is $\theta_1=150\beta_1+\beta_2$. Use the data in HPRICE1.RAW to estimate $\theta_1$.
+
+```{r}
+
+options(scipen=999) # To avoid scientific notation
+
+lm1<-lm(lprice~sqrft+bdrms, data)
+
+summary(lm1)
+
+```
+Hence, $\theta_1=150(0.0003)+0.0288=0.0738$
+
+**(ii) Write $\beta_2$ in terms of $\theta_1$ and $\beta_1$ and plug this into the `log(price)` equation.**
+
+Writing $\beta_2$ in terms of $\theta_1$ and $\beta_1$, 
+
+$$\beta_2=\theta_1-150\beta_1$$
+
+Plugging $\beta_2$ in the equation:
+
+$$log(price)=\beta_0+\beta_1sqrft+(\theta_1-150\beta_1)bdrms+u$$
+**(iii) Use part (ii) to obtain a standard error for $\hat{\theta_1}$ and use this standard error to**
+**construct a 95% confidence interval.**
+
+In progress...
+
+
