@@ -1,0 +1,88 @@
+---
+title: "Chapter 4 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "11/03/2022"
+output: html_document
+---
+
+# Exercise 10.5 
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(seastests)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::ezanders
+  
+```
+
+**Use the data in EZANDERS.RAW for this exercise. The data are on monthly unemployment**
+**claims in Anderson Township in Indiana, from January 1980 through November**
+**1988. In 1984, an enterprise zone (EZ) was located in Anderson (as well as other cities**
+**in Indiana). [See Papke (1994) for details.]**
+
+**(i) Regress `log(uclms)` on a linear time trend and 11 monthly dummy variables.**
+**What was the overall trend in unemployment claims over this period? (Interpret the**
+**coefficient on the time trend.) Is there evidence of seasonality in unemployment**
+**claims?**
+
+Creating dummy month variables to the existing dataframe
+
+```{r}
+
+data[paste0("M", 1:12)] <- as.data.frame(t(sapply(data$Month, tabulate, 12)))
+
+```
+
+Regression on `log(uclms)`
+
+```{r}
+
+data$t<-c(1:108)
+
+lm1<-lm(luclms~t+jan+feb+mar+apr+may+jun+jul+aug+sep+oct+nov, data)
+
+summary(lm1)
+
+
+
+```
+
+The coefficient associated to variable `Trend` is equal to -0.01 and has
+statistical significance at the 1% level.
+
+Seasonality tests
+
+```{r}
+isSeasonal(data$uclms, test = "combined", freq = 12)
+
+fried(data$uclms, freq = 12, diff = T, residuals = F, autoarima = T)
+
+
+```
+
+The null hypothesis of no stable seasonality is rejected at the 1% significance
+level. 
+
+In both tests, the variable `uclms` presents seasonality.
+
+**(ii) Add ez, a dummy variable equal to 1 in the months Anderson had an EZ, to the**
+**regression in part (i). Does having the enterprise zone seem to decrease unemployment**
+**claims? By how much? [You should use formula (7.10) from Chapter 7.]**
+
+```{r}
+
+lm2<-lm(luclms~t+jan+feb+mar+apr+may+jun+jul+aug+sep+oct+nov+ez, data)
+
+summary(lm2)
+```
+
