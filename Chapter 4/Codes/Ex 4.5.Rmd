@@ -1,0 +1,86 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "14/03/2022"
+output: html_document
+---
+
+# Exercise 4.5
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::mlb1
+
+```
+
+**Use the data in MLB1.RAW for this exercise.**
+
+**(i) Use the model estimated in equation (4.31) and drop the variable `rbisyr`. What**
+**happens to the statistical significance of `hrunsyr`? What about the size of the**
+**coefficient on `hrunsyr`?**
+
+Original model (Example 4.31)
+
+```{r}
+
+options(scipen = 999) # To avoid scientific notation
+
+lm0<-lm(lsalary~years+gamesyr+bavg+hrunsyr+rbisyr, data)
+
+summary(lm0)
+
+```
+
+
+```{r}
+
+lm1<-lm(lsalary~years+gamesyr+bavg+hrunsyr, data)
+
+summary(lm1)
+
+```
+
+In the second estimated model, the variable `hrunsyr` becomes statistically 
+significant at the 1% level. In the first model, this variable do not show
+statistical significance. The magnitude of coefficient increases from 0.01 
+to 0.03.
+
+**(ii) Add the variables `runsyr` (runs per year), `fldperc` (fielding percentage), and**
+**`sbasesyr` (stolen bases per year) to the model from part (i). Which of these factors**
+**are individually significant?**
+
+```{r}
+
+lm2<-lm(lsalary~years+gamesyr+bavg+hrunsyr+runsyr+
+          fldperc+sbasesyr, data)
+
+summary(lm2)
+
+```
+
+In this case, the only variable that shows statistical significance is the `runsyr`
+at the 1% level.
+
+**(iii) In the model from part (ii), test the joint significance of `bavg`,** 
+**`fldperc`, and `sbasesyr`.**
+
+```{r}
+
+linearHypothesis(lm2, c("bavg=0","fldperc=0","sbasesyr=0"))
+
+```
+
+With base in the p-value of F-Test, we cannot reject the null hypothesis
+that this coefficients are jointly different from zero.
