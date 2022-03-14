@@ -1,0 +1,44 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "13/03/2022"
+output: html_document
+---
+
+# Exercise 4.4
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::bwght
+
+#dim(data)
+
+```
+
+
+**In Example 4.9, the restricted version of the model can be estimated using all**
+**1,388 observations in the sample. Compute the R-squared from the regression of**
+**bwght on cigs, parity, and faminc using all observations. Compare this to the**
+**R-squared reported for the restricted model in Example 4.9.**
+
+```{r}
+lm1<-lm(bwght~cigs+parity+faminc, data)
+
+summary(lm1)
+```
+The estimated equation is expressed as follows
+
+$$\widehat{bwght}=114.21-0.47cigs+1.61parity+0.09faminc$$
+The R-Squared is equal to 3.4%. Hence, the variability in `bwght` is only 3.4%
+explaneid by the exogenous variables of the model.
