@@ -1,0 +1,83 @@
+---
+title: "Chapter 10 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "14/03/2022"
+output: html_document
+---
+
+# Exercise 10.7
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(dplyr)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::consump
+
+
+```
+**Use the data set CONSUMP.RAW for this exercise**
+
+**Estimate a simple regression model relating the growth in real per capita consumption**
+**(of nondurables and services) to the growth in real per capita disposable**
+**income. Use the change in the logarithms in both cases. Report the results in the**
+**usual form. Interpret the equation and discuss statistical significance.**
+
+```{r}
+
+lm1<-lm(log(rcons)~ly, data)
+
+summary(lm1)
+
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(rcons)}=-5.54+1.40log(y)$$
+
+For an increase of 1% in disposal income per capita the consume of goods and
+services increases aproximately 1.4%. The both, intercept and $\beta_1$ coefficient
+shows statistical significance at the 1% level. The model has an almost perfect fit, 
+with R-Squared of 99.3%.
+
+**(ii) Add a lag of the growth in real per capita disposable income to the equation from**
+**part (i). What do you conclude about adjustment lags in consumption growth?**
+
+```{r}
+
+lm2<-lm(log(rcons)~lag(ly,1)+lag(ly,0), data)
+
+summary(lm2)
+```
+
+
+In this case, the estimated model is expressed as follows
+
+$$\widehat{log(rcons)}=-5.42+0.57log(y)_t+0.81log(y)_{t-1}$$
+
+**(iii) Add the real interest rate to the equation in part (i). Does it affect** 
+**consumption growth?**
+
+```{r}
+
+lm3<-lm(log(rcons)~ly+log(r3),
+        data)
+summary(lm3)
+```
+
+The estimated equation is expressed as follows 
+
+$$\widehat{log(rcons)}=-5.54+1.40log(y)_t-0.006log(r3)_t$$
+
+Hence, for an increase of 1% in real interest rate, the consume decreases by
+0.006%.
