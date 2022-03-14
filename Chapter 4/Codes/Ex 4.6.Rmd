@@ -1,0 +1,63 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "14/03/2022"
+output: html_document
+---
+
+# Exercise 4.6
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::wage2
+
+```
+
+**Use the data in WAGE2.RAW for this exercise.**
+
+**(i) Consider the standard wage equation**
+
+$$log(wage)=\beta_0+\beta_1educ+\beta_2exper+\beta_3tenure+u$$
+
+
+**State the null hypothesis that another year of general workforce experience has the**
+**same effect on `log(wage)` as another year of `tenure` with the current employer.**
+
+In this case, the null hypothesis is expressed as follows
+
+$H_0: \beta_2-\beta_3=0$ and the alternative hypothesis given by 
+$H_1: \beta_2-\beta_3 \neq 0$
+
+
+**(ii) Test the null hypothesis in part (i) against a two-sided alternative, at the** 
+**5% significance level, by constructing a 95% confidence interval. What do you conclude?**
+
+
+```{r}
+
+lm1<-lm(lwage~educ+exper+tenure, data)
+
+summary(lm1)
+
+```
+Jointly hypothesis test
+
+```{r}
+
+linearHypothesis(lm1, c("exper=1","tenure=-1"))
+
+```
+Hence, with base in the p-value of F-Test, we reject the null hypothesis that 
+this two variables have the same effect on return of `log(wage)`.
