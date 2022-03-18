@@ -1,0 +1,77 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "18/03/2022"
+output: html_document
+---
+
+# Exercise 4.7
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+library(lmreg)
+library(dplyr)
+library(wooldridge)
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+data<-wooldridge::twoyear
+
+str(data)
+```
+
+
+**Refer to the example used in Section 4.4. You will use the data set TWOYEAR.RAW.**
+
+**(i) The variable `phsrank` is the person’s high school percentile. (A higher number**
+**is better. For example, 90 means you are ranked better than 90 percent of your**
+**graduating class.) Find the smallest, largest, and average `phsrank` in the sample.**
+
+```{r}
+summary(data$phsrank)
+```
+
+The smallest, largest and average value of `phsrank` are 0, 99.0 and 56.16
+respectively.
+
+
+
+**(ii) Add `phsrank` to equation (4.26) and report the OLS estimates in the usual**
+**form. Is `phsrank` statistically significant? How much is 10 percentage points of**
+**high school rank worth in terms of wage?**
+
+```{r}
+lm1<-lm(lwage~jc+totcoll+exper+phsrank, data)
+
+summary(lm1)
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(wage)}=1.45-0.009jc+0.075totcoll+0.004exper+0.0003phsrank$$
+
+The variable `phsrank` do not show statistical significance at any level.
+
+In terms of return to wage, an increase of 10% in `phsrank`, implies in 
+0.003% increase wage.
+
+**(iii) Does adding `phsrank` to (4.26) substantively change the conclusions on**
+**the returns to two- and four-year colleges? Explain.**
+
+In progress...
+
+
+**(iv) The data set contains a variable called id. Explain why if you add id to**
+**equation (4.17) or (4.26) you expect it to be statistically insignificant. What** 
+**is the two-sided p-value?**
+
+In progress...
+
+
+
+
+
+
