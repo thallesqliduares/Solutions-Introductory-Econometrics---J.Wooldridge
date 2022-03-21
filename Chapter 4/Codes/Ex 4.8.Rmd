@@ -1,0 +1,99 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "21/03/2022"
+output: html_document
+---
+
+# Exercise 4.8
+
+Upload packages
+
+```{r, warning=F, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(dplyr)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+data1<-wooldridge::k401ksubs
+```
+
+
+
+**The data set 401KSUBS.RAW contains information on net financial wealth (nettfa),**
+**age of the survey respondent (age), annual family income (inc), family size ( fsize), and**
+**participation in certain pension plans for people in the United States. The wealth and**
+**income variables are both recorded in thousands of dollars. For this question, use only**
+**the data for single-person households (so fsize = 1).**
+
+**(i) How many single-person households are there in the data set?**
+
+```{r}
+
+single_person<- data1 %>%
+  filter(marr == 0) %>%
+  summarise(n=n())
+
+single_person
+
+```
+
+Hence, there's 3445 single persons in the sample.
+
+**(ii) Use OLS to estimate the model**
+
+$$nettfa=\beta_0+\beta_1inc+\beta_2age+u$$
+
+**and report the results using the usual format. Be sure to use only the single-person**
+**households in the sample. Interpret the slope coefficients. Are there any surprises**
+**in the slope estimates?**
+
+```{r}
+
+lm1<-lm(nettfa~age+inc, data1, subset= fsize==1)
+
+summary(lm1)
+
+
+
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{nettfa}=-43.03+0.84age+0.79inc$$
+The estimated coefficients have the expected sign. For an unit increase in age
+of individuals, the net familiar financial assets, increases by $0.84 (thousands). 
+For an increase of \$1 in income, the `nettfa` increases by \$0.8 (thousands).
+
+**(iv) Find the p-value for the test $H_0: \beta_2 = 1$ against $H_1: \beta_2 < 1$.**
+**Do you reject $H_0$ at the 1% significance level?**
+
+```{r}
+
+linearHypothesis(lm1, c("inc=1"))
+
+```
+
+Yes. It's possible to reject the null hypothesis at the 1% significance level.
+
+**(v) If you do a simple regression of nettfa on inc, is the estimated coefficient**
+**on inc much different from the estimate in part (ii)? Why or why not?**
+
+```{r}
+lm2<-lm(nettfa~inc, data1, subset=fsize==1)
+
+summary(lm2)
+```
+
+In this case, the estimated equation is expressed as follows
+
+$$\widehat{nettfa}=-10.5+0.82inc$$
+
+This represent a sligth difference in terms of magnitude of coefficients.
