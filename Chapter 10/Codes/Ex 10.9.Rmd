@@ -1,0 +1,84 @@
+---
+title: "Chapter 10 - Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "21/03/2022"
+output: html_document
+---
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::volat
+
+attach(data)
+
+```
+
+
+# Exercise 10.9 
+
+**Use the data in VOLAT.RAW for this exercise. The variable `rsp500` is the monthly**
+**return on the Standard & Poor’s 500 stock market index, at an annual rate. (This**
+**includes price changes as well as dividends.) The variable `i3` is the return on** 
+**three- month T-bills, and `pcip` is the percentage change in industrial production;** 
+**these are also at an annual rate.**
+
+**(i) Consider the equation**
+
+$$rp500_t=\beta_0+\beta_1pcip_t+\beta_2i3_t+u_t$$
+
+**What signs do you think $\beta_1$ and $\beta_2$ should have?**
+
+The expected sign on `pcip` is positive. As this index for industrial 
+production increases, the economic activity also tends to increase, _ceteris paribus_. 
+So, the index of SP (represented by `rsp500``), tends to increases, as well.
+
+As the interest rate on the treasury increases, it becomes more profitable to 
+invest resources in these treasury stocks, _ceteris paribus_. In this way, less 
+resources are invested in businesses, which tends to decrease the S&P index. Hence,
+the expected sign of this coefficient is negative.
+
+
+**(ii) Estimate the previous equation by OLS, reporting the results in standard form.**
+**Interpret the signs and magnitudes of the coefficients.**
+
+```{r}
+
+lm1<-lm(rsp500~pcip+i3)
+
+summary(lm1)
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{rsp500}=18.84+0.03pcip-1.36i3$$
+
+Hence, the estimated coefficients have the expected sign.
+
+For an unit variation in `pcip` the `rsp500` increases 0.03 points. On the other
+hand, for an unit variation in `i3` the `rsp500` decreases by 1.36 points.
+
+**(iii) Which of the variables is statistically significant?**
+
+The `pcip` do not show statistical significance at anyy level. On the other hand,
+the variable `i3` shows statistical significance at the 5% level.
+
+**(iv) Does your finding from part (iii) imply that the return on the S&P 500 is**
+**predictable? Explain.**
+
+This simple model shows a poor capacity of explain the variation of S & P index.
+In more detailed and robust models, the dynamics of S & P index could be more
+investigated.
+
+
