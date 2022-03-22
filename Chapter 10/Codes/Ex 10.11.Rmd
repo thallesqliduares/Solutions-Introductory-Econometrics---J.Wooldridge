@@ -1,0 +1,154 @@
+---
+title: "Chapter 10 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "22/03/2022"
+output: html_document
+---
+
+# Exercise 10.11
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(tseries)
+library(car)
+
+```
+Upload database
+
+```{r}
+
+data<-wooldridge::traffic2
+
+attach(data)
+
+```
+
+
+
+**The file TRAFFIC2.RAW contains 108 monthly observations on automobile accidents,**
+**traffic laws, and some other variables for California from January 1981 through**
+**December 1989. Use this data set to answer the following questions.**
+
+**(i) During what month and year did California’s seat belt law take effect? When** 
+**did the highway speed limit increase to 65 miles per hour?**
+
+```{r}
+
+totacc.ts<-ts(totacc, start=c(1981,1), frequency = 12)
+
+fatacc.ts<-ts(fatacc, start=c(1981,1), frequency = 12)
+
+par(mfrow=c(2,1))
+
+plot.ts(totacc.ts,
+        ylab="Number of total accidents",
+        main="Evolution of total accidents ")
+
+plot.ts(fatacc.ts,
+        ylab="Number of fatal accidents",
+        main="Evolution of fatal accidents")
+```
+
+
+
+The number of fatal accidents fall sharply during 1981, but the lowest value of 
+serie was reached in the beggining of 1982.
+
+**(ii) Regress the variable `log(totacc)` on a linear time trend and 11 monthly dummy**
+**variables, using January as the base month. Interpret the coefficient estimate on**
+**the time trend. Would you say there is seasonality in total accidents?**
+
+```{r}
+
+lm1<-lm(ltotacc~feb+mar+apr+may+jun+jul+aug
+        +sep+oct+nov+dec+t)
+
+summary(lm1)
+
+```
+
+The coefficient associated to `t` is equal to 0.002. Hence, there's an increase in
+`ltotacc` of approximately  0.2% as time passes by, which suggests a presence of
+tendency in the serie.
+
+Now, testing the presence of seasonality in the serie.
+
+```{r}
+hyp<-c("feb=0", "mar=0", "apr=0", "may=0",
+       "jun=0", "jul=0", "aug=0","sep=0", "oct=0",
+       "nov=0", "dec=0")
+
+linearHypothesis(lm1,hyp)
+```
+
+
+If all coefficients associated to the month dummies are equal to 0, then is there 
+no evidence of seasonality in the serie. But, via F-Test, it's possible to reject
+the null hypothesis that all coefficients are jointly equal to 0 at the 1% 
+significance level. Hence, there's evidence of seasonality in the serie.
+
+**(iii) Add to the regression from part (ii) the variables wkends, unem, spdlaw, and**
+**beltlaw. Discuss the coefficient on the unemployment variable. Does its sign and**
+**magnitude make sense to you?**
+
+```{r}
+lm2<-lm(ltotacc~feb+mar+apr+may+jun+jul+aug
+        +sep+oct+nov+dec+t+wkends+unem+spdlaw
+        +beltlaw)
+
+summary(lm2)
+
+```
+
+The coefficient associated to variable `unem` is equal to -0.021 and have 
+statistical significance at the 1% level. As `unem` increases, `ltotacc` decreases
+which suggests some sense, since individuals in situation of unemployment might have no 
+access to a vehicle.
+
+**(iv) In the regression from part (iii), interpret the coefficients on `spdlaw`** 
+**and `beltlaw`. Are the estimated effects what you expected? Explain.**
+
+The coefficient associated to `spdlaw` has the expected sign, as limits of velocity
+is imposed, there's a tendency in decrease the number of total accidents. In the
+other hand, the coefficient sign of `beltlaw` suggests to the contrary. A possible
+explanation for this result, is that, as individuals use the belt, they might incur
+in high speed velocities, cause the belt causes a sensation of safety.
+
+**(v) The variable `prcfat` is the percentage of accidents resulting in at least one fatality.**
+**Note that this variable is a percentage, not a proportion. What is the average of**
+**`prcfat` over this period? Does the magnitude seem about right?**
+
+
+
+```{r}
+
+round(mean(prcfat),2)*100
+
+```
+
+The mean percentual value of `prcfat` is equal to 89%. It seems, a very high percentage
+of fatalities in the total number of car accidents.
+
+**(vi) Run the regression in part (iii) but use prcfat as the dependent variable in**
+**place of log(totacc). Discuss the estimated effects and significance of the speed** 
+**and seat belt law variables.**
+
+```{r}
+
+options(scipen=999)
+
+lm3<-lm(prcfat~feb+mar+apr+may+jun+jul+aug
+        +sep+oct+nov+dec+t+wkends+unem+spdlaw
+        +beltlaw)
+
+summary(lm3)
+
+```
+
+In this case, the coefficient sign of `beltlaw` is as expected, but without
+statistical significance. The percentual of fatalities increases, as speed law
+increases in this case, which is not an expected result in empirical terms.
