@@ -1,0 +1,75 @@
+---
+title: "Chapter 10 - Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "23/03/2022"
+output: html_document
+---
+
+# Exercise 10.10
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::intdef
+
+attach(data)
+
+```
+
+
+
+**Consider the model estimated in (10.15); use the data in INTDEF.RAW.**
+
+**(i) Find the correlation between ``inf` and `def` over this sample period and**
+**comment.**
+
+```{r}
+
+round(cor(inf, def),3)
+
+```
+
+The correlation between `inf` and `def` is equal to 9.7% over this sample period.
+
+**(ii) Add a single lag of inf and def to the equation and report the results in the**
+**usual form.**
+
+```{r}
+
+lm1<-lm(i3~inf+def+inf_1+def_1)
+
+summary(lm1)
+
+```
+
+The estimated equation is expressed as follows
+
+$$\hat{i3}=1.61+0.34inf_t-0.18def_t+0.38inf_{t-1}+0.56def_{t-1}$$
+
+
+
+**(iii) Compare the estimated LRP for the effect of inflation with that in equation**
+**(10.15). Are they vastly different?**
+
+In progress.. 
+
+**(iv) Are the two lags in the model jointly significant at the 5% level?**
+
+```{r}
+linearHypothesis(lm1, c("inf_1=0","def_1=0"))
+```
+
+
+The null hypothesis is rejected at the 1% significance level. Hence, there's evidence
+that this two lagged variables influence the T-3 bill rate.
