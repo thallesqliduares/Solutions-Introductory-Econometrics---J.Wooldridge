@@ -1,0 +1,92 @@
+---
+title: "Chapter 10 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "24/03/2022"
+output: html_document
+---
+
+
+# Exercise 10.12 
+
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(tseries)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::phillips
+
+attach(data)
+  
+```
+
+**(i) Estimate equation (10.2) using all the data in PHILLIPS.RAW and report the**
+**results in the usual form. How many observations do you have now?**
+
+Transforming the variables into time series objects
+
+```{r}
+
+inf.ts<-ts(inf, start=1948, frequency = 1)
+
+unem.ts<-ts(unem, start=1948, frequency = 1)
+
+```
+
+Regression estimates
+
+```{r}
+
+lm1<-lm(inf.ts~unem.ts)
+
+summary(lm1)
+
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{inf_t}=1.05+0.5unem_t$$
+In total, are 56 observations, covering the period 1948-2003.
+
+**(ii) Compare the estimates from part (i) with those in equation (10.14). In**
+**particular, does adding the extra years help in obtaining an estimated tradeoff** 
+**between inflation and unemployment? Explain**
+
+No. Even adding extra years, the estimated model is not yet capable of capture
+the theorical tradeoff between inflation and unemployment rate.
+
+**(iii) Now run the regression using only the years 1997 through 2003. How do these**
+**estimates differ from those in equation (10.14)? Are the estimates using the most**
+**recent seven years precise enough to draw any firm conclusions? Explain.**
+
+Selecting the period between 1997-2003
+
+```{r}
+
+inf.ts.2<-ts(inf, start=1997, end=2003, frequency = 1)
+
+unem.ts.2<-ts(unem, start=1997, end=2003, frequency = 1)
+
+```
+
+
+```{r}
+summary(lm2<-lm(inf.ts.2~unem.ts.2))
+```
+
+
+Now, in this case, the expected tradeoff is in fact captured by the model
+
+The estimated equation is expressed as follows
+
+$$\widehat{inf_t}=8.88-1.43unem_t$$
