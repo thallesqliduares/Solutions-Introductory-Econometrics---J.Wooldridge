@@ -1,0 +1,97 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "24/03/2022"
+output: html_document
+---
+
+# Exercise 4.10
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::elem94_95
+
+attach(data)
+
+```
+
+
+**Use the data in ELEM94_95 to answer this question. The findings can be compared**
+**with those in Table 4.1. The dependent variable `lavgsal` is the log of average **
+**teacher salary and `bs` is the ratio of average benefits to average salary (by school).**
+
+**(i) Run the simple regression of `lavgsal` on `bs`. Is the estimated slope statistically**
+**different from zero? Is it statistically different from -1?**
+
+Regression
+
+```{r}
+
+summary(lm1<-lm(lavgsal~bs))
+
+```
+
+Hypothesis test: different from zero
+
+```{r}
+linearHypothesis(lm1, c("bs=0"))
+```
+
+It's possible to reject the null hypothesis that the coefficient is equal to 0 at
+the 1% significance level.
+
+Hypothesis test: different from -1
+
+```{r}
+
+linearHypothesis(lm1, c("bs=-1"))
+
+```
+
+Isn't possible to reject the null hypothesis that the coefficient is equal to -1, 
+because the p-value=0.17>0.05.
+
+**(ii) Add the variables lenrol and lstaff to the regression from part (i). What**
+**happens to the coefficient on bs? How does the situation compare with that in**
+**Table 4.1?**
+
+```{r}
+
+summary(lm2<-lm(lavgsal~bs+lenrol+lstaff))
+
+```
+
+
+The coefficient on `bs` changes from -0.79 to -0.60.
+
+**(iii) How come the standard error on the `bs` coefficient is smaller in part (ii)**
+**than in part (i)? (Hint: What happens to the error variance versus multicollinearity**
+**when `lenrol` and `lstaff` are added?)**
+
+In progress..
+
+**(v) Now add the variable lunch to the regression. Holding other factors fixed, are**
+**teachers being compensated for teaching students from disadvantaged backgrounds?**
+**Explain.**
+
+```{r}
+
+summary(lm3<-lm(lavgsal~bs+lenrol+lstaff+lunch))
+
+```
+
+No, holding other factors fixed, the effect is negative, besides it's small
+magnitude.
+
+
