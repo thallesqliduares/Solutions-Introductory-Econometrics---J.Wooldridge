@@ -1,0 +1,93 @@
+---
+title: "Chapter 5 - OLS Asymptotics"
+author: "Thalles Quinaglia Liduares"
+date: "24/03/2022"
+output: html_document
+---
+
+
+# Exercise 5.1
+
+Upload packages 
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(lmtest)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::wage1
+
+attach(data)
+
+```
+**Use the data in WAGE1.RAW for this exercise.**
+
+**(i) Estimate the equation**
+
+$$wage=\beta_0+\beta_1educ+\beta_2exper+\beta_3tenure+u$$
+**Save the residuals and plot a histogram.**
+
+```{r}
+
+lm1<-lm(wage~educ+exper+tenure)
+
+summary(lm1)
+
+
+```
+
+Histogram
+
+```{r}
+
+hist(lm1$residuals,
+     main="Histogram of residuals",
+     xlab="Residuals")
+
+```
+
+Normality of residuals test
+
+```{r}
+
+Box.test(lm1$residuals, type="Ljung-Box") #lm1
+
+```
+
+
+
+
+
+**(ii) Repeat part (i), but with log(wage) as the dependent variable.**
+
+```{r}
+
+lm2<-lm(lwage~educ+exper+tenure)
+
+summary(lm2)
+
+hist(lm2$residuals,
+   main="Histogram of residuals",
+    xlab="Residuals")
+
+
+
+```
+```{r}
+Box.test(lm2$residuals, type="Ljung-Box") #lm2
+```
+
+
+**(iii) Would you say that Assumption MLR.6 is closer to being satisfied for the**
+**level-level model or the log-level model?**
+
+The first case is more close of a normal distribution of residuals.
+
+
