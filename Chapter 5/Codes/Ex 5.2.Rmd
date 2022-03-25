@@ -1,0 +1,83 @@
+---
+title: "Chapter 5 - OLS Asymptotics"
+author: "Thalles Quinaglia Liduares"
+date: "25/03/2022"
+output: html_document
+---
+
+# Exercise 5.2
+
+Upload packages
+
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::gpa2
+
+attach(data)
+
+
+
+```
+
+
+**Use the data in GPA2.RAW for this exercise.**
+
+**(i) Using all 4,137 observations, estimate the equation**
+
+$$colgpa=\beta_0+\beta_1hsperc+\beta_2sat+u$$
+
+**and report the results in standard form**
+
+```{r}
+
+options(scipen=999) # To avoid sci notation
+
+summary(lm1<-lm(colgpa~hsperc+sat))
+
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{colgpa}=1.39-0.013hsperc+0.0014sat$$
+
+**(ii) Reestimate the equation in part (i), using the first 2,070 observations.**
+
+```{r}
+
+data2<-data[1:2070,] 
+
+summary(lm2<-lm(data2$colgpa~data2$hsperc+data2$sat))
+
+```
+
+
+In this case, the estimated equation is given by
+
+$$\widehat{colgpa}=1.43-0.012hsperc+0.0014sat$$
+
+**(iii) Find the ratio of the standard errors on hsperc from parts (i) and (ii).**
+**Compare this with the result from (5.10).**
+
+```{r}
+
+std1<-0.00054947
+
+std2<-0.00071852
+
+ratio<-round(std1/std2,3)*100
+
+ratio
+
+```
+
