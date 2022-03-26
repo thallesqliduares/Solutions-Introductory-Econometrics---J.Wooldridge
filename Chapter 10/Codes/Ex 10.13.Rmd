@@ -1,0 +1,90 @@
+---
+title: "Chapter 10 - Basic Regression Analysis with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "26/03/2022"
+output: html_document
+---
+
+# Exercise 10.13
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(tseries)
+library(wooldridge)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::minwage
+
+attach(data)
+
+```
+
+**Use the data in MINWAGE.RAW for this exercise. In particular, use the employment**
+**and wage series for sector 232 (Men’s and Boys’ Furnishings). The variable `gwage232`**
+**is the monthly growth (change in logs) in the average wage in sector 232, `gemp232` is**
+**the growth in employment in sector 232, `gmwage` is the growth in the federal minimum**
+**wage, and `gcpi` is the growth in the (urban) Consumer Price Index.**
+
+**(i) Run the regression `gwage232` on `gmwage`, `gcpi`. Do the sign and magnitude of**
+**$\hat{\beta}_{mwage}$ make sense to you? Explain. Is `gmwage` statistically significant?**
+
+```{r}
+
+summary(lm1<-lm(gwage232~gmwage+gcpi))
+
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{gwage232}=0.002+0.15gmwage+0.24gcpi$$
+
+For an unit increase in `gmwage`, the growth in average wage in sector 232 is 
+aproximatelly $0.15. In empirical terms, we would expect a negative sign for this
+coefficient, because a larger minimum wage, tends to decrease the level of
+employment, _ceteris paribus_, lowering the average wage of sector.
+
+**(ii) Add lags 1 through 12 of `gmwage` to the equation in part (i). Do you think it is**
+**necessary to include these lags to estimate the long-run effect of minimum wage**
+**growth on wage growth in sector 232? Explain.**
+
+```{r}
+summary(lm2<-lm(gwage232~gmwage_1+gmwage_2+gmwage_3+gmwage_4+gmwage_5+
+          gmwage_6+gmwage_7+gmwage_8+gmwage_9+gmwage_10+
+          gmwage_11+gmwage_12+gcpi+gmwage))
+```
+
+For monthly data, the theory recommends an inclusion of 12 lags to the model.
+But, in this specific case, the model do not show a good performance, with almost 
+all variables without statistical significance.
+
+**(iii) Run the regression `gemp232` on `gmwage`,`gcpi`. Does minimum wage growth**
+**appear to have a contemporaneous effect on `gemp232`?**
+
+```{r}
+summary(lm2<-lm(gemp232~gmwage+gcpi))
+```
+
+
+The estimated model do not show any significance.
+
+**(iv) Add lags 1 through 12 to the employment growth equation. Does growth in the**
+**minimum wage have a statistically significant effect on employment growth, either**
+**in the short run or long run? Explain**
+
+```{r}
+
+summary(lm3<-lm(gemp232~gmwage_1+gmwage_2+gmwage_3+gmwage_4+gmwage_5+
+          gmwage_6+gmwage_7+gmwage_8+gmwage_9+gmwage_10+
+          gmwage_11+gmwage_12+gcpi+gmwage))
+```
+
+Again, the estimated equation do not show any significance.
