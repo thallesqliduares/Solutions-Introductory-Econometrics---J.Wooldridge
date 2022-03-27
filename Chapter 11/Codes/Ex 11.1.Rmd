@@ -1,0 +1,133 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "27/03/2022"
+output: html_document
+---
+
+# Exercise 11.1
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(tseries)
+library(lmreg)
+library(wooldridge)
+
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::hseinv
+
+attach(data)
+
+```
+
+
+**Use the data in HSEINV.RAW for this exercise.**
+
+**(i) Find the first order autocorrelation in log(invpc). Now, find the autocorrelation**
+**after linearly detrending log(invpc). Do the same for log( price). Which of the two**
+**series may have a unit root?**
+
+```{r}
+
+linvpc.ts<-ts(linvpc, start=1947, end=1988, frequency = 1)
+
+acf(linvpc.ts, pl=FALSE)
+
+```
+
+The first-order autocorrelation on `log(invpc)` is equal to 0.594.
+
+```{r}
+
+linvpc_diff<-diff(linvpc.ts) #Applying first-difference
+
+acf(linvpc_diff, pl=FALSE)
+
+```
+
+Now, the first order autocorrelations reduces from 0.594 to 0.042.
+
+```{r}
+
+par(mfrow=c(2,1))
+
+plot.ts(linvpc.ts)
+plot.ts(linvpc_diff)
+```
+
+
+```{r}
+
+lprice.ts<-ts(lprice, start=1947, end=1988, frequency = 1)
+
+```
+
+ACF
+
+```{r}
+
+acf(lprice.ts, pl=FALSE)
+
+```
+
+The first order autocorrelation on variable `log(price)` is equal to 0.896.
+
+Detrending
+
+```{r}
+
+lprice_diff<-diff(lprice.ts)
+
+```
+
+ACF
+
+```{r}
+acf(lprice_diff, pl=FALSE)
+```
+
+The first order autocorrelation reduces from 0.896 to 0.122.
+
+Based on ACF analysis, both series seems to be integrated of order 1, hence, 
+with presence of unit roots.
+
+```{r}
+
+par(mfrow=c(2,1))
+
+plot.ts(lprice.ts)
+plot.ts(lprice_diff)
+
+```
+
+
+**(ii) Based on your findings in part (i), estimate the equation**
+
+$$log(invpc)_t=\beta_0+\beta_1\Delta log(price)_t+\beta_2t+u_t$$
+**and report the results in standard form. Interpret the coefficient $\hat{\beta_1}$**
+**and determine whether it is statistically significant.**
+
+```{r}
+
+tt<-t[1:41]
+
+summary(lm1<-lm(linvpc_diff~lprice_diff+tt))
+
+```
+
+The estimated model as a whole, its not significant, because the p-value of
+F-Statistic is equal to 0.396.
+
+
+
+
+
+
