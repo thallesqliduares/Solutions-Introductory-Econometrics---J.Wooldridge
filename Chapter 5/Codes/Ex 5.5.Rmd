@@ -1,0 +1,87 @@
+---
+title: "Chapter 5 - OLS Asymptotics"
+author: "Thalles Quinaglia Liduares"
+date: "29/03/2022"
+output: html_document
+---
+
+# Exercise 5.5 
+
+Upload package
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(dplyr)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::htv
+
+attach(data)
+
+```
+
+
+**Consider the analysis in Computer Exercise C11 in Chapter 4 using the data in HTV.RAW,**
+**where `educ` is the dependent variable in a regression.**
+
+**(i) How many different values are taken on by `educ` in the sample? Does `educ` have a**
+**continuous distribution?**
+
+```{r}
+
+distinct_educ<- dplyr::n_distinct(educ)
+
+distinct_educ
+
+```
+
+Distribution of education
+
+```{r}
+
+hist(educ)
+
+```
+
+There are 15 different values from education in the sample. The distribution of
+`educ` is discrete.
+
+**(ii) Plot a histogram of `educ` with a normal distribution overlay. Does the distribution**
+**of `educ` appear anything close to normal?**
+
+```{r}
+
+educ_mean<-round(mean(educ),2)
+
+educ_sd<-round(sd(educ),2)
+
+hist(educ, density=10, breaks=10, prob=TRUE, 
+     xlab="Years of education", ylim=c(0,1), 
+     main="normal curve over histogram")
+curve(dnorm(x, mean=educ_mean, sd=educ_sd), 
+      col="darkblue", lwd=2, add=TRUE, yaxt="n")
+```
+
+
+**(iii) Which of the CLM assumptions seems clearly violated in the model**
+
+$$educ=\beta_0+\beta_1motheduc+\beta_2fatheduc+\beta_2abil+\beta_4abil^2+u$$
+
+**How does this violation change the statistical inference procedures carried out in**
+**Computer Exercise C11 in Chapter 4?**
+
+```{r}
+
+summary(lm1<-lm(educ~motheduc+fatheduc+abil+I(abil^2)))
+
+```
+
+
+In progress...
