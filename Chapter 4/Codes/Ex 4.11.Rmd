@@ -1,0 +1,112 @@
+---
+title: "Chapter 4 - Inference"
+author: "Thalles Quinaglia Liduares"
+date: "29/03/2022"
+output: html_document
+---
+
+# Exercise 4.11
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+library(wooldridge)
+library(lmreg)
+library(car)
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::htv
+
+attach(data)
+
+```
+
+**Use the data in HTV.RAW to answer this question. See also Computer Exercise C10 in**
+**Chapter 3.**
+
+**(i) Estimate the regression model**
+
+$$educ=\beta_0+\beta_1motheduc+\beta_2fatheduc+\beta_3abil+\beta_4abil^2+u$$
+
+**by OLS and report the results in the usual form. Test the null hypothesis that `educ`**
+**is linearly related to `abil` against the alternative that the relationship is quadratic.**
+
+```{r}
+
+summary(lm1<-lm(educ~motheduc+fatheduc+abil+I(abil^2)))
+
+```
+
+The estimated equation is expressed as follows 
+
+$$\widehat{educ}=8.2+0.19motheduc+0.10fatheduc+0.40abil+0.05abil^2$$
+```{r}
+
+linearHypothesis(lm1, c("I(abil^2)=0"))
+
+```
+```{r}
+linearHypothesis(lm1, c("abil=0","I(abil^2)=0"))
+```
+
+```{r}
+linearHypothesis(lm1,c("abil=0"))
+```
+
+
+Based on all combinations of hypothesis tests, its possible to reject the null
+that `abil^2` is equal to 0 in the estimated model.
+
+**(ii) Using the equation in part (i), test $H_0: \beta_1 = \beta_2 $ against a **
+**two-sided alternative. What is the p-value of the test?**
+
+```{r}
+linearHypothesis(lm1, c("motheduc-fatheduc=0"))
+```
+
+In this case, its not possible to reject the null hypothesis, because the
+p-value associated to F-Test is equal to 0.053>0.05.
+
+**(iii) Add the two college tuition variables to the regression from part (i) and**
+**determine whether they are jointly statistically significant.**
+
+```{r}
+summary(lm2<-lm(educ ~ motheduc + fatheduc + abil + I(abil^2)+tuit17+tuit18))
+```
+
+```{r}
+linearHypothesis(lm2, c("tuit17=0","tuit18=0"))
+```
+
+Based on the estimated coefficients and the hypothesis test its possible conclude
+that both `tuit17` and `tuit18` do not influence the dependent variable `educ`.
+
+**(iv) What is the correlation between `tuit17` and `tuit18`? Explain why using the**
+**average of the tuition over the two years might be preferred to adding each separately.**
+**What happens when you do use the average?**
+
+Correlation
+
+```{r}
+cor(tuit17, tuit18)
+```
+
+The extreme high correlation between `tuit17` and `tuit18` equal to 98% might be
+causing multicollinearity problems in the estimation. Using, one of the two, or 
+the median between them, might be a possible solution to this problem.
+
+**(v) Do the findings for the average tuition variable in part (iv) make sense when**
+**interpreted causally? What might be going on?**
+
+```{r}
+data$tuit_mean<-(tuit17+tuit18)/2
+```
+```{r}
+summary(lm3<-lm(educ ~ motheduc + fatheduc + abil + I(abil^2) + data$tuit_mean))
+```
+
+The inclusion of `tuit_mean` do not show individual significance.
