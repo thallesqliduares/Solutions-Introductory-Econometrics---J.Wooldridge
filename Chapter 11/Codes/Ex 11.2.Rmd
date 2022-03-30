@@ -1,0 +1,75 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "30/03/2022"
+output: html_document
+---
+
+# Exercise 11.2
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+library(tseries)
+library(lmreg)
+library(wooldridge)
+library(car)
+```
+
+Upload database
+
+```{r warning=FALSE, message=FALSE}
+
+data<-wooldridge::earns
+
+attach(data)
+
+
+```
+
+**In Example 11.7, define the growth in hourly wage and output per hour as the change**
+**in the natural log: $ghrwage = \Delta log(hrwage)$ and $goutphr = \Delta log(outphr)$.** 
+**Consider a simple extension of the model estimated in (11.29):**
+
+$$ghrwage_t=\beta_0+\beta_1goutphr_t+\beta_2goutphr_{t-1}+u_t$$
+
+**This allows an increase in productivity growth to have both a current and lagged**
+**effect on wage growth**
+
+**(i) Estimate the equation using the data in EARNS.RAW and report the results in**
+**standard form. Is the lagged value of `goutphr` statistically significant?**
+
+```{r}
+summary(lm1<-lm(ghrwage~goutphr+goutph_1))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{ghrwage}_t=-0.01+0.728goutphr_t+0.457goutphr_{t-1}$$
+
+The estimated coefficient associated to the lagged variable $goutphr_{t-1}$ 
+is equal to 0.457 and have statistical significance at the 1% level.
+
+**(ii) If $\beta_1 + \beta_2 = 1$, a permanent increase in productivity growth is**
+**fully passed on in higher wage growth after one year. Test $H_0: \beta_1 + \beta_2 = 1$** 
+**against the two-sided alternative. Remember, one way to do this is to write the **
+**equation so that $\theta = \beta_1 + \beta_'2 $appears directly in the model,** 
+**as in Example 10.4 from Chapter 10.**
+
+```{r}
+linearHypothesis(lm1, c("goutphr+goutph_1=1"))
+```
+
+It's not possible to reject the null hypothesis that $\beta_1+\beta_2=1$ because
+the p-value associated to the F-Test is equal to 0.366>0.050.
+
+**(iii) Does $goutphr_{t-2}$ need to be in the model? Explain.**
+
+```{r}
+summary(lm2<-lm(ghrwage~goutphr+goutph_1+goutph_2))
+```
+
+
+In terms of statistical significance, its not necessary to include the variable
+`goutphr_{t-2}` to the model.
+
