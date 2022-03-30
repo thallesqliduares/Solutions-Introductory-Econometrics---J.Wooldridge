@@ -1,0 +1,68 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "30/03/2022"
+output: html_document
+---
+
+# Exercise 11.4
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(lmtest)
+library(tseries)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::phillips
+
+attach(data)
+
+```
+
+**Use the data in PHILLIPS.RAW for this exercise, but only through 1996.**
+
+**(i) In Example 11.5, we assumed that the natural rate of unemployment is constant. An**
+**alternative form of the expectations augmented Phillips curve allows the natural rate**
+**of unemployment to depend on past levels of unemployment. In the simplest case,**
+**the natural rate at time t equals unemt21. If we assume adaptive expectations, we obtain**
+**a Phillips curve where inflation and unemployment are in first differences:**
+
+$$\Delta inf=\beta_0+\beta_1 \Delta unem+u$$
+
+**Estimate this model, report the results in the usual form, and discuss the sign,**
+**size, and statistical significance of $\hat{\beta}_1$.**
+
+```{r}
+
+diff_inf<-diff(inf)
+
+diff_unem<-diff(unem) 
+
+summary(lm1<-lm(diff_inf~diff_unem)) 
+
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{\Delta inf}=-0.07-0.83\Delta unem$$
+The coefficient associated to the unemployment variable is equal to -0.83
+and have statistical significance at the 1% level. For an unit percent increase
+in unemployment rate the inflation rate decreases 0.83%.
+
+**(ii) Which model fits the data better, (11.19) or the model from part (i)? Explain.**
+
+The model in (11.19) presents a $R^2$ equal to approximately 10%. In the other hand,
+the model in this exercise presents a $R^2$ equal to 13%. In this second case, 
+the inclusion of variables in differences might purge trend in the series.
+
+
