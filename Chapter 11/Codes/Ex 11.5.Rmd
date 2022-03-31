@@ -1,0 +1,76 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "31/03/2022"
+output: html_document
+---
+
+# Exercise 11.5
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+Upload database
+
+```{r}
+data<-wooldridge::fertil3
+
+attach(data)
+
+```
+
+**(i) Add a linear time trend to equation (11.27). Is a time trend necessary in the**
+**first difference equation?**
+
+The equation (11.27) is expressed as follows
+
+$$\widehat{\Delta gfr}=0.964-0.36\Delta pe-0.014\Delta pe_{t-1}+0.110\Delta pe_{t-2}$$
+
+```{r}
+summary(lm1<-lm(cgfr~pe+pe_1+pe_2+t))
+```
+
+The purpose of estimate with variables in differences is remove trend or seasonality
+or both. However, in specific cenarios is necessary to include a time trend. 
+In this specific item, the inclusion of a time trend do not contribute for a better
+performance of the model. The F-Statistic shows that the variables are not jointly 
+significant.
+
+**(ii) Drop the time trend and add the variables `ww2` and `pill` to (11.27) (do not**
+**differencethese dummy variables). Are these variables jointly significant at the**
+**5% level?**
+
+```{r}
+summary(lm2<-lm(cgfr~pe+pe_1+pe_2+ww2+pill))
+```
+
+Now, the F-Statistic of the estimated model shows jointly significance of variables.
+
+```{r}
+linearHypothesis(lm2, c("ww2=0","pill=0"))
+```
+
+Yes, it's possible to reject the null hypothesis that these two variables jointly
+don't influences the dependent variable.
+
+**(iii) Add the linear time trend, `ww2`, and `pill` all to equation (11.27). What** 
+**happens to the magnitude and statistical significance of the time trend as**
+**compared with that in part (i)? What about the coefficient on `pill` as compared**
+**with that in part (ii)?**
+
+```{r}
+summary(lm3<-lm(cgfr~pe+pe_1+pe_2+ww2+pill+t))
+```
+
+The coefficient associated to the trend variable is still not significant.
+However, the overall significance of the model becomes significant, as p-value<0.05.
+
+The coefficient associated to the `pill` variable changes from -2.69 to -4.36
+with statistical significance of 5% in both cases.
