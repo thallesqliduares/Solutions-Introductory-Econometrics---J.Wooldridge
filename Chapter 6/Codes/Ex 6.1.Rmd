@@ -1,0 +1,95 @@
+---
+title: "Chapter 6 -"
+author: "Thalles Quinaglia Liduares"
+date: "31/03/2022"
+output: html_document
+---
+
+# Exercise 6.1
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r}
+
+data<-wooldridge::kielmc
+
+attach(data)
+
+```
+
+**Use the data in KIELMC.RAW, only for the year 1981, to answer the following questions.**
+**The data are for houses that sold during 1981 in North Andover, Massachusetts;**
+**1981 was the year construction began on a local garbage incinerator**
+
+**(i) To study the effects of the incinerator location on housing price, consider**
+**the simple regression model**
+
+$$log(price)=\beta_0+\beta_1 log(dist)+u$$
+
+**where price is housing price in dollars and `dist` is distance from the house to the**
+**incinerator measured in feet. Interpreting this equation causally, what sign do you**
+**expect for $\beta_1$ if the presence of the incinerator depresses housing prices? Estimate**
+**this equation and interpret the results.**
+
+```{r}
+summary(lm1<-lm(lprice~ldist))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(price)}=8.25+0.31log(dist)$$
+In theory, the expected sign would be negative. However, the estimated coefficient
+for `dist` is positive. In this case, there's a postive relatioshinp between the 
+distance of incinerator and the houses.
+
+**(ii) To the simple regression model in part (i), add the variables log(intst), log(area),**
+**log(land), rooms, baths, and age, where `intst` is distance from the home to the interstate,**
+**area is square footage of the house, land is the lot size in square feet, rooms is**
+**total number of rooms, baths is number of bathrooms, and age is age of the house in**
+**years. Now, what do you conclude about the effects of the incinerator? Explain why**
+**(i) and (ii) give conflicting results.**
+
+```{r}
+summary(lm2<-lm(lprice~ldist+lintst+larea+lland+rooms+baths+age))
+```
+
+
+In this case, the magnitude of coefficient associated to the `dist` variable is 
+very small, equal to 0.02, despites it's positive sign. The others explanatory
+variables has expected signs.
+
+**(iii) Add $[log(intst)]^2$ to the model from part (ii). Now what happens? What do**
+**you conclude about the importance of functional form?**
+
+```{r}
+
+
+summary(lm3<-lm(lprice ~ ldist + lintst + larea + lland + rooms + 
+    baths + age + lintstsq))
+```
+
+There's a considerable increase in the $R^2$ of the estimated equation, equal to
+61.78% and almost all variables has statistical significance in this case.
+
+**(iv) Is the square of log(dist) significant when you add it to the model from**
+**part (iii)?**
+
+```{r}
+
+ldist_sqr<-ldist^2
+
+summary(lm4<-lm(lprice ~ ldist + lintst + larea + lland + rooms + 
+    baths + age + lintstsq+ldist_sqr))
+```
+
+
+No. The square of `log(dist)` isn't significant at any level.
