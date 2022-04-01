@@ -1,0 +1,94 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "01/04/2022"
+output: html_document
+---
+
+# Exercise 11.8
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(forecast)
+library(tseries)
+
+
+```
+
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::phillips
+
+attach(data)
+
+```
+
+
+
+**Use the data in PHILLIPS.RAW for this exercise.**
+
+**(i) Estimate an AR(1) model for the unemployment rate. Use this equation to predict**
+**the unemployment rate for 2004. Compare this with the actual unemployment**
+**rate for 2004. (You can find this information in a recent Economic Report of the**
+**President.)**
+
+Transforming `unem` into ts object.
+
+```{r}
+unem.ts<-ts(unem, start=1948, end=2003, frequency=1)
+```
+
+
+```{r}
+
+ndiffs(unem.ts)
+
+summary(ar_1<-forecast::Arima(unem, order=c(1,1,0)))
+
+```
+
+Forecast 1-year ahead
+
+```{r}
+forecast(ar_1, h=1)
+```
+
+The effective unemployment rate of USA in the year 2004 was equal to 5.53%. The
+forecast model predicts a rate equal to 6.00%. An error of forecast equal to
+6.00-5.53=0.47%
+
+**(ii) Add a lag of inflation to the AR(1) model from part (i). Is `inf_t-1` statistically**
+**significant?**
+
+```{r}
+
+
+ar_2<-Arima(unem.ts, order=c(1,1,0), xreg = inf_1)
+
+
+```
+
+**(iii) Use the equation from part (ii) to predict the unemployment rate for 2004.**
+**Is the result better or worse than in the model from part (i)?**
+
+```{r}
+
+for_inf_2004<-forecast(ar_2, xreg = inf)
+
+for_inf_2004
+
+```
+```{r}
+plot(for_inf_2004)
+```
+
+The unemployment forecasted is 6.68%, which means a larger value than before.
+
+
