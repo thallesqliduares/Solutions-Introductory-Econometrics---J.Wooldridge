@@ -1,0 +1,74 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "01/04/2022"
+output: html_document
+---
+
+# Exercise 11.6
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::inven
+
+attach(data)
+
+```
+
+
+**Let `invent` be the real value inventories in the United States during year t, let**
+**$GDP_t$ denote real gross domestic product, and let $r3_t$ denote the (ex post) real**
+**interest rate on threemonth T-bills. The ex post real interest rate is (approximately)**
+**$r3_t =i3_t – inf_t$, where $i3_t$ is the rate on three-month T-bills and $inf_t$ is the annual**
+**inflation rate [see Mankiw (1994, Section 6.4)]. The change in inventories, $cinvent$,**
+**is the inventory investment for the year. The accelerator model of inventory investment** 
+**relates $cinven$ to the $cGDP$, the change in GDP:**
+
+$$cinven_t=\beta_0+\beta_1cGDP_t+u_t$$
+
+**where $\beta_1 > 0$. [See, for example, Mankiw (1994), Chapter 17.]**
+
+**(i) Use the data in INVEN.RAW to estimate the accelerator model. Report the results**
+**in the usual form and interpret the equation. Is $\hat{\beta}_1$ statistically greater than zero?**
+
+```{r}
+summary(lm1<-lm(cinven~cgdp))
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{cinven}_t=2.58+0.15cGDP_t$$
+
+The coefficient associated to `cgdp` is statistically significant at the 1%
+level. For an unit increase in `cgdp` the `cinven` variable increases 0.15 units.
+
+**(ii) If the real interest rate rises, then the opportunity cost of holding inventories**
+**rises, and so an increase in the real interest rate should decrease inventories.**
+**Add the real interest rate to the accelerator model and discuss the results.**
+
+```{r}
+summary(lm2<-lm(cinven~cgdp+r3))
+```
+
+For an unit increase in `r3` the `cinven` variable decreases by 0.89 units.
+
+**(iii) Does the level of the real interest rate work better than the first difference,**
+**$cr3_t$?**
+
+```{r}
+summary(lm3<-lm(cinven~cgdp+cr3))
+```
+
+No. The variable `r3` performs better than `cr3`.
