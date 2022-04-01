@@ -1,0 +1,76 @@
+---
+title: "Chapter 6 - Multiple Regression Analysis: Further Issues"
+author: "Thalles Quinaglia Liduares"
+date: "01/04/2022"
+output: html_document
+---
+
+# Exercise 6.2
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(car)
+
+```
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::wage1
+
+attach(data)
+
+```
+
+
+
+**Use the data in WAGE1.RAW for this exercise.**
+
+**(i) Use OLS to estimate the equation**
+
+$$log(wage)=\beta_0+\beta_1educ+\beta_2exper+\beta_3exper^2+u$$
+
+**and report the results using the usual format.**
+
+```{r}
+summary(lm1<-lm(lwage~educ+exper+expersq))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(wage)}=0.12+0.09educ+0.04exper-0.0007exper^2$$
+
+All coefficients (except the intercept) are statistically significant at the
+1% level.
+
+**(ii) Is $exper^2$ statistically significant at the 1% level?**
+
+Yes, as showed above.
+
+**(iii) Using the approximation**
+
+$$\%\widehat{\Delta wage} \approx 100(\hat{\beta}_2+2\hat{\beta_3}exper)\Delta exper$$
+
+**find the approximate return to the fifth year of experience. What is the approximate**
+**return to the twentieth year of experience?**
+
+$$\%\widehat{\Delta wage} \approx 100(0.04+2 \cdot(-0.0007)\cdot5)\cdot(5-4)$$
+Hence, the percentual variation is equal to 3.3%. In the second case, substituing
+5 by 20, we obtain a value 1.34%. So, there's a dimininshing increase in wage as
+experience increases.
+
+**(iv) At what value of exper does additional experience actually lower predicted**
+**log(wage)? How many people have more experience in this sample?**
+
+In this case, is necessary to derive the expression in relation to `exper` and equal
+to 0 to find the point of inflexion. The expression is given by
+
+$$\frac{\widehat{\Delta wage}}{\Delta exper}=0.04-2\cdot0.0007\cdot exper=0$$
+$$exper^*=\frac{0.04}{2\cdot(0.0007)} \approx28.5$$
+
+Thus, with approximately 28.5 years of experience, the salary return starts to decrease.
+
