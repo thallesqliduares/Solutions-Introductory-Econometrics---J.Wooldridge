@@ -1,0 +1,70 @@
+---
+title: 'Chapter 6 - Multiple Regression Analysis: Further Issues'
+author: "Thalles Quinaglia Liduares"
+date: "03/04/2022"
+output: html_document
+---
+
+# Exercise 6.4
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+
+```
+
+Upload database
+
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::gpa2
+
+attach(data)
+
+```
+
+**Use the data in GPA2.RAW for this exercise.**
+**(i) Estimate the model**
+
+$$sat=\beta_0+\beta_1hsize+\beta_2hsize^2+u$$
+
+**where `hsize` is the size of the graduating class (in hundreds), and write the results**
+**in the usual form. Is the quadratic term statistically significant?**
+
+```{r}
+
+summary(lm1<-lm(log(sat)~hsize+hsizesq))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(sat)}=6.89+0.019hsize-0.002hsize^2$$
+The coefficient associated to `hsize^2` is statistically significant at the 1%
+level.
+
+**(ii) Using the estimated equation from part (i), what is the “optimal” high school**
+**size? Justify your answer.**
+
+Deriving the equation in relation to the `hsize` and setting equal to 0 to find
+the optimal value
+
+$$\frac{\partial log(sat)}{\partial hsize}=0.019-2\cdot0.002hsize=0$$
+
+$$hsize^*=\frac{0.019}{2\cdot0.002}$$
+
+$$hsize^*=4.75$$
+
+**(iii) Is this analysis representative of the academic performance of all high school**
+**seniors? Explain.**
+
+No. In terms of $R^2$ the model explain just 0.7% of the variability of `sat`, which
+is in fact,  a very low power of explanation.
+
+**(iv) Find the estimated optimal high school size, using log(sat) as the dependent**
+**variable. Is it much different from what you obtained in part (ii)?**
+
+Already done, to smooth the estimated coefficients, the `log(sat)` was used.
