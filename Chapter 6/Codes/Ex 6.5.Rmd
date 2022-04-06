@@ -1,0 +1,67 @@
+---
+title: "Chapter 6 -"
+author: "Thalles Quinaglia Liduares"
+date: "05/04/2022"
+output: html_document
+---
+
+# Exercise 6.5
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::hprice1
+
+attach(data)
+
+```
+
+**Use the housing price data in HPRICE1.RAW for this exercise.**
+
+**(i) Estimate the model**
+
+$$log(price)=\beta_0+\beta_1(lotsize)+\beta_2log(sqrft)+\beta_3bdrms+u$$
+
+**and report the results in the usual OLS format.**
+
+```{r}
+
+options(scipen=999) # to avoid sci notation
+
+summary(lm1<-lm(lprice~lotsize+lsqrft+bdrms))
+
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(price)}=-0.427+0.000006lotsize+0.777log(sqrft)+0.03bdrms$$
+**(ii) Find the predicted value of `log(price)`, when `lotsize` = 20,000, sqrft = 2,500, and**
+**`bdrms` = 4. Using the methods in Section 6.4, find the predicted value of price at**
+**the same values of the explanatory variables.**
+
+$$\widehat{log(price)}=-0.427+0.000006(20,000)+0.777log(2,500)+0.03(4)$$
+$$\widehat{log(price)}=5.89$$
+**(iii) For explaining variation in price, decide whether you prefer the model from part (i)**
+**or the model**
+
+$$price=\beta_0+\beta_1lotsize+\beta_2sqrft+\beta_3bdrms$$
+
+```{r}
+summary(lm2<-lm(price~lotsize+sqrft+bdrms))
+```
+
+
+The logarimization of variables permits interpret coefficients of differents
+measures and sizes in one common scale. In this case, the interpretion of coefficients
+as percent changes, is more interesting and appropriate.
