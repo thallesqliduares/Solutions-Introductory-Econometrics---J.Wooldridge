@@ -1,0 +1,95 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: "06/04/2022"
+output: html_document
+---
+
+# Exercise 11.9
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(lmreg)
+library(wooldridge)
+library(tseries)
+#library(forecast)
+
+```
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::traffic2
+
+attach(data)
+
+```
+
+**Use the data in TRAFFIC2.RAW for this exercise. Computer Exercise C11 in Chapter 10**
+**previously asked for an analysis of these data.**
+
+**(i) Compute the first order autocorrelation coefficient for the variable `prcfat`.**
+**Are you concerned that `prcfat` contains a unit root? Do the same for the unemployment** 
+**rate.**
+
+```{r}
+
+prcfat.ts<-ts(prcfat, start=c(1981,1), end=c(1989,12), frequency = 12)
+
+plot.ts(prcfat.ts)
+
+acf(prcfat.ts, pl=F, lag=5)
+
+```
+Based on time serie plot of variable `prcfat` and in the respective ACF function, 
+there's evidence that this variable is not stationary.
+
+```{r}
+
+
+unem.ts<-ts(unem, start=c(1981,1), end=c(1989,12), frequency = 12)
+
+plot.ts(unem.ts)
+
+acf(unem, pl=F, lag=5)
+
+```
+
+Similarly for the variable `unem`.
+
+**(ii) Estimate a multiple regression model relating the first difference of prcfat,**
+**$\Delta prcfat$, to the same variables in part (vi) of Computer Exercise C11 in Chapter 10,**
+**except you should first difference the unemployment rate, too. Then, include a**
+**linear time trend, monthly dummy variables, the weekend variable, and the two**
+**policy variables; do not difference these. Do you find any interesting results?**
+
+```{r}
+
+unem_1<-diff(unem)
+
+unem_1<-append(unem_1, values=NA, after=length(unem_1)) # To equal the length of 
+                                                        #  unem_1 to the length
+                                                        # of other variables
+
+lm1<-lm(prcfat~prcfat_1+unem+unem_1+t+feb+mar+
+                  apr+may+jun+jul+aug+sep+oct+nov+dec+wkends+
+                  spdlaw+beltlaw)
+
+
+summary(lm1)
+
+```
+Based on coefficients associated to months of july and august, seems to have a 
+greater impact on traffic accidents.
+
+**(iii) Comment on the following statement: “We should always first difference any**
+**time series we suspect of having a unit root before doing multiple regression**
+**because it is the safe strategy and should give results similar to using the levels.”**
+**[In answering this, you may want to do the regression from part (vi) of Computer**
+**Exercise C11 in Chapter 10, if you have not already.]**
+
+Non-stationary series may not satisfy the CLM assumptions. Generally, a differentiation process
+is required to make the series stationary and perform the multiple regression estimations.
+
