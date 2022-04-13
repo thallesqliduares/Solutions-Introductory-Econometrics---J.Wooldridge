@@ -1,0 +1,86 @@
+---
+title: 'Chapter 6 - Multiple Regression Analysis: Further Issues'
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-13'
+output: html_document
+---
+
+# Exercise 6.9
+
+Upload packages
+
+```{r, warning=F, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::nbasal
+attach(data)
+
+```
+
+
+
+**The data set NBASAL.RAW contains salary information and career statistics for**
+**269 players in the National Basketball Association (NBA)**.
+
+**(i) Estimate a model relating points-per-game (points) to years in the league (exper),**
+**age, and years played in college (coll). Include a quadratic in exper; the other**
+**variables should appear in level form. Report the results in the usual way.**
+
+```{r}
+summary(lm1<-lm(points~exper+age+coll+expersq))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{points}=35.21+2.36exper-1.07age-1.28coll-0.07exper^2$$
+**(ii) Holding college years and age fixed, at what value of experience does the next**
+**year of experience actually reduce points-per-game? Does this make sense?**
+
+Deriving the estimated equation in relation to the variable `exper`, to find the
+point of inflection.
+
+$$\frac{\partial \widehat{points}}{\partial exper}= 2.36-2(0.07)exper=0$$
+$$exper^*=\frac{2.36}{2(0.07)} \approx 17$$
+Hence, the number of points starts to decline with 17 years of experience. However, this
+value do not make practical sense.
+
+
+**(iv) Add a quadratic in age to the equation. Is it needed? What does this appear to**
+**imply about the effects of age, once experience and education are controlled for?**
+
+```{r}
+summary(lm2<-lm(points~exper+age+coll+expersq+agesq))
+```
+
+In this case, the inclusion of variable `agesq` demonstrates that the points in the match
+increases until certain age, and then becomes to decreasing.
+
+**(v) Now regress `log(wage)` on `points`, `exper`, `exper^2`, `age`, and `coll`.**
+**Report the results in the usual format.**
+
+```{r}
+summary(lm3<-lm(lwage~points+exper+expersq+age+coll))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(wage)}=6.77+0.07points+0.21exper-0.007exper^2-0.04age-0.04coll$$
+**(vi) Test whether `age` and `coll` are jointly significant in the regression from part (v).**
+**What does this imply about whether age and education have separate effects on**
+**wage, once productivity and seniority are accounted for?**
+
+```{r}
+linearHypothesis(lm3, c("age=0","coll=0"))
+```
+
+It's not possible to reject the null hypothesis that both coefficients are equal
+to zero.
