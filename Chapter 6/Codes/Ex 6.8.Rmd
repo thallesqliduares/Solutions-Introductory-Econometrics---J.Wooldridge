@@ -1,0 +1,83 @@
+---
+title: "Chapter 6 -"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-12'
+output: html_document
+---
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+```
+
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::hprice1
+
+attach(data)
+
+```
+
+
+**Use the data in HPRICE1.RAW for this exercise.**
+
+**(i) Estimate the model**
+
+$$price=\beta_0+\beta_1lotsize+\beta_2sqrft+\beta_3bdrms+u$$
+
+**and report the results in the usual form, including the standard error of the**
+**regression. Obtain predicted price, when we plug in `lotsize` = 10,000, `sqrft` =**
+**2,300, and `bdrms` = 4; round this price to the nearest dollar**.
+
+```{r}
+
+options(scipen=999) # To avoid scientific notation
+
+summary(lm1<-lm(price~lotsize+sqrft+bdrms))
+
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{price}=-21.77+0.002lotsize+0.122sqrft+13.85bdrms$$
+
+Substituing the values in the estimated equation, we have that
+
+$$\widehat{price}=-21.77+0.002(10000)+0.122(2300)+13.85(4)$$
+$$\widehat{price}=  335 \ dollars$$
+**(ii) Run a regression that allows you to put a 95% confidence interval around the**
+**predicted value in part (i). Note that your prediction will differ somewhat due to**
+**rounding error.**
+
+Defining the transformed variables.
+
+```{r}
+lotsize0<-lotsize-10000
+sqrft0<-sqrft-2300
+bdrms0<-bdrms-4
+```
+
+Regressing the transformed variables
+
+```{r}
+summary(lm2<-lm(price~lotsize0+sqrft0+bdrms0))
+```
+
+
+The confidence interval is given by $$336.7 \pm 1.96(7.374)$$
+
+
+Hence, the estimate lies in the interval [322.2,351.15].
+
+**(iii) Let $price^0$ be the unknown future selling price of the house with the characteristics**
+**used in parts (i) and (ii). Find a 95% CI for $price^0$ and comment on the width of**
+**this confidence interval.**
+
+In progress..
+
