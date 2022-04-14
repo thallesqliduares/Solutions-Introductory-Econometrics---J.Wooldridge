@@ -1,0 +1,82 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-14'
+output: html_document
+---
+
+# Exercise 11.3
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+Upload database
+
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::nyse
+attach(data)
+
+```
+
+**(i) In Example 11.4, it may be that the expected value of the return at time t, given** 
+**past returns, is a quadratic function of returnt21. To check this possibility, use the**
+**data in NYSE.RAW to estimate**
+
+$$return_t=\beta_0+\beta_1return_{t-1}+\beta_2return^2_{t-1}+u_t$$
+**report the results in standard form.**
+
+```{r}
+
+retsq<-return_1*return_1
+
+summary(lm1<-lm(return~return_1+retsq))
+        
+```
+The estimated equation is expressed as follows
+
+$$\widehat{return}_t=0.22+0.04return_{t-1}-0.009return^2_{t-1}$$
+
+
+(ii) State and test the null hypothesis that $\mathbb{E}(return_t \mid return_{t-1})$ does not depend on 
+return_{t-1}. (Hint: There are two restrictions to test here.) What do you conclude?
+
+The null hypothesus is that $H_0: \beta_1=\beta_2=0$
+
+```{r}
+linearHypothesis(lm1, c("return_1=0","retsq=0"))
+```
+
+Based in the p-value of F-Test isn't possible to reject the null hypothesis that
+`return` depends on its lagged value. Thus, we cannot corroborate the hypothesis 
+of efficient markets.
+
+**(iii) Drop $return^2_{t-1}$ from the model, but add the interaction term $return_{t-1}\cdot return{t-2}$.**
+**Now test the efficient markets hypothesis.**
+
+```{r}
+
+return_2<-diff(return_1)
+
+ret_int<-return_1*return_2
+
+summary(lm2<-lm(return~return_1+ret_int))
+
+```
+
+```{r}
+
+linearHypothesis(lm2,c("return_1=0","ret_int=0"))
+
+```
+
+Now, in this case, its possible to reject the null hypothesis, and we can corroborate
+the efficient market hypothesis.
