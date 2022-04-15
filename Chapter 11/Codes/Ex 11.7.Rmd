@@ -1,0 +1,88 @@
+---
+title: "Chapter 11"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-14'
+output: html_document
+---
+
+# Exercise 11.7
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::consump
+attach(data)
+
+```
+
+
+**Use CONSUMP.RAW for this exercise. One version of the permanent income hypothesis**
+**(PIH) of consumption is that the growth in consumption is unpredictable. [Another version** 
+**is that the change in consumption itself is unpredictable; see Mankiw (1994, Chapter 15)** 
+**for discussion of the PIH.] Let $gc_t=log(c_t) - log(c_{t-1})$ be the growth in real per capita** 
+**consumption (of nondurables and services). Then the PIH implies that $\mathbb{E}(gc_t \mid I_{t-1})= \mathbb{E}(gc_t)$**
+**,where $I_{t-1}$ denotes information known at time (t - 1); in this case, t denotes a year.**
+
+**(i) Test the PIH by estimating $gc_t = \beta_0+\beta_1gc_{t-1}+ u_t$.**
+**Clearly state the null and alternative hypotheses. What do you conclude ?**
+
+```{r}
+summary(lm1<-lm(gc~gc_1))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{gc}_t=0.01+0.44gc_{t-1}$$
+
+The null hypothesis is that $H_0: \beta_1=0$ and the alternative $H_1: \beta_1 \neq 0$
+
+```{r}
+linearHypothesis(lm1, c("gc_1=0"))
+```
+
+Based in the p-value of F-Test we can reject the null hypothesis, so the PIH isn't
+corroborated.
+
+**(ii) To the regression in part (i) add the variables $gy_{t−1}, i3_{t−1}$, and $inf_{t−1}$. Are these new**
+**variables individually or jointly significant at the 5% level? (Be sure to report the**
+**appropriate p-values.)**
+
+```{r}
+
+i3_1<-append(diff(i3), NA)
+
+inf_1<-append(diff(inf), NA)
+
+summary(lm2<-lm(gc~gc_1+gy_1+i3_1+inf_1))
+```
+
+```{r}
+linearHypothesis(lm2, c("gc_1=0","gy_1=0","i3_1=0","inf_1=0"))
+```
+
+The explanatory variables are only jointly significant.
+
+**(iii) In the regression from part (ii), what happens to the p-value for the t statistic**
+**on $gc_{t−1}$? Does this mean the PIH hypothesis is now supported by the data?**
+
+The coefficient associated to $gc_{t-1}$ is not significant at any level.
+
+**(iv) In the regression from part(ii), what is the F statistic and its associated p-value for**
+**joint significance of the four explanatory variables? Does your conclusion about**
+**the PIH now agree with what you found in part (i)?**
+
+The p-value of F-Test is equal to 0.0035, hence its possible to reject the null.
+However, the coefficients of the model individually dont presents significance, which
+means a poor capacity of explain the model.
+
+
