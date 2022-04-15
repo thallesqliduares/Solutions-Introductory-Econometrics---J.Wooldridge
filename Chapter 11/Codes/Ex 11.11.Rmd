@@ -1,0 +1,87 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-15'
+output: html_document
+---
+
+# Exercise 11.11
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::okun
+
+attach(data)
+
+```
+
+
+
+**Okun’s Law—see, for example, Mankiw (1994, Chapter 2)—implies the following**
+**relationship between the annual percentage change in real GDP, `pcrgdp`, and**
+**the change in the annual unemployment rate, `cunem`:**
+
+$$pcrgdp=3-2\cdot cunem$$
+
+**If the unemployment rate is stable, real GDP grows at 3% annually. For each percentage**
+**point increase in the unemployment rate, real GDP grows by two percentage points**
+**less. (This should not be interpreted in any causal sense; it is more like a statistical** 
+**description.)**
+
+**(i) Use the data in OKUN.RAW to estimate the equation. Do you get exactly 3 for**
+**the intercept and -2 for the slope? Did you expect to?**
+
+```{r}
+summary(lm1<-lm(pcrgdp~cunem))
+
+lm1$coefficients
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{pcrgdp}_t=3.34-1.89cunem_t$$
+The estimated coefficients are almost equal to the effective values.
+
+**(ii) Find the t statistic for testing $H_0: \beta_1=-2$. Do you reject $H_0$ against the**
+**two-sided alternative at any reasonable significance level?**
+
+```{r}
+linearHypothesis(lm1, c("cunem=-2"))
+```
+
+Its not possible to reject the null hypothesis that $\beta_1=-2$ at the 5% 
+significance level.
+
+(iii) Find the t statistic for testing $H_0: \beta_0 = 3$. Do you reject $H_0$ at the 5% level against 
+the two-sided alternative? Is it a “strong” rejection?
+
+```{r}
+linearHypothesis(lm1, c("(Intercept)=3"))
+```
+
+In this case, it's possible to reject the null hypothesis at the 5% level of
+statistical significance.
+
+**(iv) Find the F statistic and p-value for testing $H_0: \beta_0 = 3, \beta_1 = -2$ against the**
+**alternative that $H_0$ is false. Does the test reject at the 10% level? Overall, would you** 
+**say the data reject or tend to support Okun’s Law?**
+
+```{r}
+linearHypothesis(lm1,c("cunem=-2", "(Intercept)=3"))
+```
+
+
+Based in the p-value of F-Test, its not possible to reject the null hypothesis, so
+we do not support the Okun Law in this specific case.
+
