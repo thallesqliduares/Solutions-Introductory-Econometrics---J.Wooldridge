@@ -1,0 +1,92 @@
+---
+title: "Chapter 11 - Further Issues in Using OLS with Time Series Data"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-17'
+output: html_document
+---
+
+# Exercise 11.13
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::beveridge
+
+attach(data)
+
+```
+
+
+**Use the data in BEVERIDGE.RAW to answer this question. The data set includes**
+**monthly observations on vacancy rates and unemployment rates for the U.S. from** 
+**December 2000 through February 2012.**
+
+**(i) Find the correlation between `urate` and `urate_1`. Would you say the correlation**
+**points more toward a unit root process or a weakly dependent process?**
+
+```{r}
+
+round(100*cor(urate, urate_1, use = "complete.obs"), 2)
+
+```
+The correlation between these two variables are very high, almost close to one.
+This implies that the variables are not weakly dependent. 
+
+**(ii) Repeat part (i) but with the vacancy rate, `vrate`.**
+
+```{r}
+
+cor(urate, vrate)
+
+```
+Similarly, the correlation is quite high, but in this case it is negative.
+
+**(iii) The Beveridge Curve relates the unemployment rate to the vacancy rate, with the**
+**simplest relationship being linear:**
+
+$$urate_t=\beta_0+\beta_1vrate_t+u_t$$
+where $\beta_1 <0 $ is expected. Estimate $\beta_0$ and $\beta_1$ by OLS and report the results in the 
+usual form. Do you find a negative relationship?
+
+```{r}
+summary(lm1<-lm(urate~vrate))
+```
+
+The estimated equation is expressed as follows 
+
+$$\widehat{urate}_t=17.11-3.74vrate$$
+**(iv) Explain why you cannot trust the confidence interval for $\beta_1$ reported by the**
+**OLS output in part (iii). [The tools needed to study regressions of this type are**
+**presented in Chapter18.]**
+
+
+As we see, the correlation between these variables are very high, what might implicate of
+failure of CLM assumptions.
+
+**(v) If you difference urate and vrate before running the regression, how does the**
+**estimated slope coefficient compare with part (iii)? Is it statistically different from** 
+**zero? [This example shows that differencing before running an OLS regression is**
+**not always a sensible strategy. But we cannot say more until Chapter 18.]**
+
+```{r}
+
+d.urate<-diff(urate)
+
+d.vrate<-diff(vrate)
+
+```
+```{r}
+summary(lm2<-lm(d.urate~d.vrate))
+```
+
+
+The coefficients vary significantly, however they do not show statistical significance.
