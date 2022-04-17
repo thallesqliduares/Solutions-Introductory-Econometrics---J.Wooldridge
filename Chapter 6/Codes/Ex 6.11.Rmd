@@ -1,0 +1,120 @@
+---
+title: 'Chapter 6 - Multiple Regression Analysis: Further Issues'
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-17'
+output: html_document
+---
+
+# Exercise 6.11
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(dplyr)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::apple
+
+attach(data)
+
+```
+
+**(i) Run the regression `ecolbs` on `ecoprc`, `regprc` and report the results in the usual**
+**form, including the R-squared and adjusted R-squared. Interpret the coefficients on**
+**the price variables and comment on their signs and magnitudes.**
+
+```{r}
+
+summary(lm1<-lm(ecolbs~ecoprc+regprc))
+
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{ecolbs}=1.96-2.92ecoprc+3.02regprc$$
+The R-Squared and Adjusted R-Squared are equal to 3.6% and 3.3%, respectively.
+
+**(ii) Are the price variables statistically significant? Report the p-values for the**
+**individual t tests.**
+
+All coefficients presents statistical significance at the 1% level.
+
+**(iii) What is the range of fitted values for `ecolbs`? What fraction of the sample reports**
+**ecolbs = 0? Comment.**
+
+```{r}
+
+ecolbs0<-data %>%
+  dplyr::filter(ecolbs == 0) %>%
+  summarise(n=n())
+
+share0<-round(100*ecolbs0/length(ecolbs),2)
+
+share0
+
+```
+
+The percentual of values equal to zero are 37.58%.
+
+```{r}
+summary(lm1$fitted.values)
+```
+The interval for `ecolbs` are equal to [0.85, 2.08].
+
+**(iv) Do you think the price variables together do a good job of explaining variation in**
+**`ecolbs`? Explain.**
+
+In terms of R-Squared, these two variables, together, presents a low capacity of
+explaining the variability of dependent variable `ecolbs`.
+
+**(v) Add the variables `faminc`, `hhsize` (household size), `educ`, and `age` to the regression**
+**from part (i). Find the p-value for their joint significance. What do you conclude?**
+
+```{r}
+summary(lm2<-lm(ecolbs~ecoprc+regprc+faminc+hhsize+educ+age))
+```
+
+```{r}
+linearHypothesis(lm2, 
+                 c("ecoprc=0",
+                   "regprc=0",
+                   "faminc=0",
+                   "hhsize=0",
+                   "educ=0",
+                   "age=0"))
+```
+
+
+The p-value of F-Test is equal to 0.00015. Hence, we reject the null hypothesis
+that all coefficients are equal to 0.
+
+**(vi) Run separate simple regressions of `ecolbs` on `ecoprc` and then `ecolbs` on `regprc`.**
+**How do the simple regression coefficients compare with the multiple regression**
+**from part (i)? Find the correlation coefficient between `ecoprc` and `regprc` to help**
+**explain your findings.**
+
+```{r}
+summary(lm3<-lm(ecolbs~ecoprc))
+```
+```{r}
+summary(lm4<-lm(ecolbs~reglbs))
+```
+
+
+```{r}
+
+cor(ecolbs, ecoprc, use="complete.obs")
+
+cor(ecolbs, reglbs, use="complete.obs")
+
+```
+
