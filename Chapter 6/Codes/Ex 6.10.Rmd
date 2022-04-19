@@ -1,0 +1,107 @@
+---
+title: "Chapter 6 -"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-19'
+output: html_document
+---
+
+# Exercise 6.10
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(dplyr)
+
+```
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::bwght2
+
+attach(data)
+
+```
+
+**Use the data in BWGHT2.RAW for this exercise.**
+
+**(i) Estimate the equation**
+
+
+
+$$log(bwght)=\beta_0+\beta_1npvis+\beta_2npvis^2+u$$
+
+**by OLS, and report the results in the usual way. Is the quadratic term significant?**
+
+```{r}
+summary(lm1<-lm(lbwght~npvis+npvissq))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(bwght)}=7.95+0.018npvis-0.0004npvis^2$$
+The coefficient associated to variable $npvis^2$ is significant at the 1% level.
+
+**(ii) Show that, based on the equation from part (i), the number of prenatal visits that**
+**maximizes `log(bwght)` is estimated to be about 22. How many women had at least**
+**22 prenatal visits in the sample?**
+
+Maximizing the above equation in relation to `npvis`, we have that
+
+$$\frac{\partial \widehat{log(bwght)}}{\partial npvis}=0.018-2\cdot(0.0004)npvis=0$$
+$$npvis^*=\frac{0.018}{2\cdot(0.0004)}=22.5$$
+```{r}
+npvis_22<- data %>%
+  filter(npvis >= 22) %>%
+  summarise(n=n())
+
+npvis_22
+```
+
+In the sample, 21 woman's had at least 22 prenatal visits.
+
+**(iv) Add mother’s age to the equation, using a quadratic functional form. Holding**
+**npvis fixed, at what mother’s age is the birth weight of the child maximized? What**
+**fraction of women in the sample are older than the “optimal” age?**
+
+```{r}
+summary(lm2<-lm(lbwght~npvis+npvissq+mage+magesq))
+```
+
+Maximizing the above equation in relation to mother's age variable, we have that
+
+$$\frac{\partial \widehat{log(bwght)}}{\partial mage}=0.025-2\cdot(0.0004)mage=0$$
+$$mage^*=\frac{0.025}{2\cdot(0.0004)}=31.25$$
+
+Hence, the age's woman that maximize the `log(bwght)` is 31 years.
+
+```{r}
+mage_31 <- data %>%
+  filter(mage > 31) %>%
+  summarise(n=n())
+
+mage_31
+
+
+```
+In the sample, there's a total of 605 womans with age larger than 31 years.
+
+**(v) Would you say that mother’s age and number of prenatal visits explain a lot of the**
+**variation in log(bwght)?**
+
+No. In terms of R-Squared, these two variables presents a poor capacity of explain 
+the variability in `log(bwght)`.
+
+**(vi) Using quadratics for both npvis and age, decide whether using the natural log or**
+**the level of bwght is better for predicting bwght.**
+
+Without log
+
+```{r}
+summary(lm3<-lm(bwght~npvis+npvissq+mage+magesq))
+```
+
+The model performs well with dependent variable in log form.
