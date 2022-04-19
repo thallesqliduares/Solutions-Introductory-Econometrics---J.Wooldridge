@@ -1,0 +1,65 @@
+---
+title: "Chapter 7 - Multiple Regression Analysis with Qualitative Information"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-19'
+output: html_document
+---
+
+# Exercise 7.1
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::gpa1
+
+attach(data)
+
+```
+
+**Use the data in GPA1.RAW for this exercise.**
+
+**(i) Add the variables `mothcoll` and `fathcoll` to the equation estimated in (7.6) and**
+**report the results in the usual form. What happens to the estimated effect of PC**
+**ownership? Is PC still statistically significant?**
+
+```{r}
+summary(lm1<-lm(colGPA~PC+hsGPA+ACT+mothcoll+fathcoll))
+```
+
+Given the estimated coefficients, we observe that PC is statistically significant
+at the 5% level. The estimate for this coefficient remais almost equal in relation
+to the original case.
+
+**(ii) Test for joint significance of `mothcoll` and `fathcoll` in the equation from part (i)**
+**and be sure to report the p-value.**
+
+```{r}
+linearHypothesis(lm1,c("mothcoll=0","fathcoll=0"))
+```
+
+It's not possible to reject the null hypothesis that both `mothcoll` and `fathcoll`
+are equal to zero, because the p-value of F-Test is quite large.
+
+**(iii) Add $hsGPA^2$  to the model from part (i) and decide whether this generalization is**
+**needed.**
+
+```{r}
+
+hsgpasq<-hsGPA*hsGPA
+
+summary(lm2<-lm(colGPA ~ PC + hsGPA + ACT + mothcoll + fathcoll+hsgpasq))
+```
+
+
+The inclusion of this variable does not increase the accuracy of the model.
