@@ -1,0 +1,82 @@
+---
+title: "Chapter 7 - Multiple Regression Analysis with Qualitative Information"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-20'
+output: html_document
+---
+
+# Exercise 7.2
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::wage2
+
+attach(data)
+
+```
+
+
+**Use the data in WAGE2.RAW for this exercise.**
+
+**(i) Estimate the model**
+
+$$log(wage)=\beta_0+\beta_1educ+\beta_2exper+\beta_3tenure+\beta_4married+\beta_5black+\beta_6south+\beta_7urban+u$$
+
+**and report the results in the usual form. Holding other factors fixed, what is the**
+**approximate difference in monthly salary between blacks and nonblacks? Is this**
+**difference statistically significant?**
+
+```{r}
+summary(lm1<-lm(lwage~educ+exper+tenure+married+black+south+urban))
+```
+
+Given the estimated equation, we observe that `black` earns 18.8% less than `nonblacks`, holding other
+factors fixed. The difference is statistically significant at the 1% level.
+
+**(ii) Add the variables $exper^2$  and $tenure^2$  to the equation and show that they**
+**are jointly insignificant at even the 20% level.**
+
+```{r}
+
+tensq<-tenure*tenure
+
+expsq<-exper*exper
+
+summary(lm2<-lm(lwage ~ educ + exper + tenure + married + black + 
+    south + urban + tensq+expsq))
+```
+
+```{r}
+linearHypothesis(lm2, c("tensq=0","expsq=0"))
+```
+
+Indeed, these two variables aren't jointly significant even at the 20% level.
+
+**(iii) Extend the original model to allow the return to education to depend on**
+**race and test whether the return to education does depend on race.**
+
+In progress..
+
+**(iv) Again, start with the original model, but now allow wages to differ across four**
+**groups of people: married and black, married and nonblack, single and black, and**
+**single and nonblack. What is the estimated wage differential between married**
+**blacks and married nonblacks?**
+
+In progress..
+
+
+
+
+
