@@ -1,0 +1,74 @@
+---
+title: "Chapter 7 - Multiple Regression Analysis with Qualitative Information"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-20'
+output: html_document
+---
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::mlb1
+
+attach(data)
+
+```
+
+
+# Exercise 7.3
+
+**A model that allows major league baseball player salary to differ by position is**
+
+$$log(salary)=\beta_0 +\beta_1years+\beta_2gamesyr+\beta_3bavg \\ 
++\beta_4hrunsyr+\beta_5rbisyr+\beta_6runsyr+\beta_7fldperc \\
++\beta_8allstar+\beta_9frstbase+\beta_{10}scndbase \\
++\beta_{11}thrdbase+\beta_{12}shrtstop+\beta_{13}catcher+u$$
+
+**where outfield is the base group**
+
+**(i) State the null hypothesis that, controlling for other factors, catchers and outfielders**
+**earn, on average, the same amount. Test this hypothesis using the data in MLB1.RAW**
+**and comment on the size of the estimated salary differential.**
+
+The null hypothesis is that $H_0: \beta_{13}=0$ against the alternative $H_1: \beta_{13} \neq 0$
+
+```{r}
+summary(lm1<-lm(lsalary~years+gamesyr+bavg+hrunsyr+rbisyr+runsyr+fldperc
+                +allstar+frstbase+scndbase+thrdbase+shrtstop+catcher))
+```
+
+
+```{r}
+linearHypothesis(lm1, c("catcher=0"))
+```
+
+It's possible to reject the null hypothesis at the 10% significance level. Hence, 
+there's a gap between the salaries of two analysed categories.
+
+**(ii) State and test the null hypothesis that there is no difference in average salary**
+**across positions, once other factors have been controlled for.**
+
+In this case, the null hypothesis is given by 
+
+$$H_0: \beta_i=0 \  \  \ i=9,10,11,12,13$$
+```{r}
+linearHypothesis(lm1, c("frstbase=0","scndbase=0","thrdbase=0","shrtstop=0","catcher=0"))
+```
+
+It's not possible to reject the null hypothesis even at the 10% significance level.
+
+**(iii) Are the results from parts (i) and (ii) consistent? If not, explain what is**
+**happening.**
+
+In the first test, there's some evidence of differetiation in salary between categorias. Otherwise, 
+in second case, the results suggests absence of discrimination, so the results must be investigated
+more depthly.
