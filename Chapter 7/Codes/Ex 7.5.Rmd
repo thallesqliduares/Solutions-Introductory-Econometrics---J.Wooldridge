@@ -1,0 +1,57 @@
+---
+title: "Chapter 7"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-21'
+output: html_document
+---
+
+# Exercise 7.5
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::ceosal1
+
+attach(data)
+
+```
+**In Problem 2 in Chapter 4, we added the return on the firm’s stock, `ros`, to a model**
+**explaining CEO salary; `ros` turned out to be insignificant. Now, define a dummy**
+**variable, `rosneg`, which is equal to one if $ros < 0$ and equal to zero if $ros \geq 0$. Use**
+**CEOSAL1.RAW to estimate the model**
+
+$$log(salary)=\beta_0+\beta_1log(sales)+\beta_2roe+\beta_3rosneg+u$$
+
+**Discuss the interpretation and statistical significance of $\hat{\beta_3}$**
+
+Creating dummy variable 
+
+```{r}
+data$rosneg<-ifelse(data$ros >= 0, 0, 1)
+
+data$rosneg
+```
+
+Model estimation 
+
+```{r}
+lm1<-lm(data$lsalary~data$lsales+data$roe+data$rosneg)
+```
+
+
+The estimated equation is expressed as follows
+
+$$\widehat{\log(salary)}=4.29+0.28log(sales)+0.01roe-0.22rosneg$$
+
+If the stock return of the firm declines, the salary of CEO tends to be negatively affected.
+The coefficient $\hat{\beta_3}$.
