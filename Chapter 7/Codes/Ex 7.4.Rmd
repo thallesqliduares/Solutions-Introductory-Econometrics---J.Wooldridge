@@ -1,0 +1,74 @@
+---
+title: "Chapter 7 - Multiple Regression Analysis with Qualitative Information"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-20'
+output: html_document
+---
+
+# Exercise 7.4
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+```
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::gpa2
+
+attach(data)
+
+```
+
+**Use the data in GPA2.RAW for this exercise.**
+
+**(i) Consider the equation**
+
+$$colgpa=\beta_0+\beta_1size+\beta_2size^2+\beta_3hsperc+\beta_4sat \\
++\beta_5female+\beta_6athlete+u$$
+
+**where `colgpa` is cumulative college grade point average, `hsize` is size of high** 
+**school graduating class, in hundreds, `hsperc` is academic percentile in graduating** 
+**class, `sat` is combined SAT score, `female` is a binary gender variable, and `athlete` is** 
+**a binary variable, which is one for student-athletes. What are your expectations for**
+**the coefficients in this equation? Which ones are you unsure about?**
+
+Negative expected signs: $hsize^2$
+
+Positive expected signs: `hsize`, `hsperc`, `sat`, `female`, `athlete`.
+
+**(ii) Estimate the equation in part (i) and report the results in the usual form. What is**
+**the estimated GPA differential between athletes and nonathletes? Is it statistically**
+**significant?**
+
+```{r}
+
+options(scipen=999)
+
+summary(lm1<-lm(colgpa~hsize+hsizesq+hsperc+sat+female+athlete))
+```
+
+The athlets students have a GPA of 0.169 higher than non-athlete students, as others
+factors remain fixed. The estimate is statistically significant at the 1% level.
+The SAT score, is one of the prerequisites for students claim an athlete fellowship.
+
+**(iii) Drop sat from the model and reestimate the equation. Now, what is the estimated**
+**effect of being an athlete? Discuss why the estimate is different than that obtained**
+**in part (ii).**
+
+```{r}
+summary(lm2<-lm(colgpa ~ hsize + hsizesq + hsperc + female + 
+    athlete))
+
+```
+
+Now, the coefficient associated to `athlete` becomes much small and non significant.
+
+**(iv) In the model from part (i), allow the effect of being an athlete to differ by gender**
+**and test the null hypothesis that there is no ceteris paribus difference between**
+**women athletes and women nonathletes.**
+
+In progress..
