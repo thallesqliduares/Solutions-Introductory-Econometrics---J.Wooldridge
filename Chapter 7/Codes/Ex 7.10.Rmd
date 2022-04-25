@@ -1,0 +1,80 @@
+---
+title: "Chapter 7"
+author: "Thalles Quinaglia Liduares"
+date: '2022-04-23'
+output: html_document
+---
+
+# Exercise 7.10
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::nbasal
+
+attach(data)
+
+```
+
+**Use the data in NBASAL.RAW for this exercise**
+
+**(i) Estimate a linear regression model relating points per game to experience in the**
+**league and position (guard, forward, or center). Include experience in quadratic**
+**form and use centers as the base group. Report the results in the usual form.**
+
+```{r}
+summary(lm1<-lm(points~exper+guard+forward+expersq))
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{points}=4.76+1.28exper+2.31guard+1.54forward-0.07exper^2$$
+
+**(ii) Why do you not include all three position dummy variables in part (i)?**
+
+To not incur in dummy variable trap.
+
+**(iii) Holding experience fixed, does a guard score more than a center? How much**
+**more? Is the difference statistically significant?**
+
+In this case, `guards` scores 2.31 points more than `center` with statistical significance
+equal to 5% level.
+
+**(iv) Now, add marital status to the equation. Holding position and experience fixed,**
+**are married players more productive (based on points per game)?**
+
+```{r}
+summary(lm2<-lm(points~exper+guard+forward+expersq+marr))
+```
+
+Yes, holding others factors fixed, married players scores, on average, 0.58 points more
+than single players. However, this value must be interpreted with caution because, there's no
+statistical significance at any representative level.
+
+**(v) Add interactions of marital status with both experience variables. In this expanded**
+**model, is there strong evidence that marital status affects points per game?**
+
+```{r}
+summary(lm3<-lm(points ~ exper + guard + forward + expersq +marr+ marrblck))
+```
+
+No, even is this case, there's no suggestion of statistical significance.
+
+**(vi) Estimate the model from part (iv) but use assists per game as the dependent**
+**variable. Are there any notable differences from part (iv)? Discuss.**
+
+```{r}
+summary(lm4<-lm(assists~exper + guard + forward + expersq +marr+ marrblck))
+```
+
+Similarly to the item (v), remains the problem of lack of statistical significance
+in the estimated coefficients associated to marital status.
