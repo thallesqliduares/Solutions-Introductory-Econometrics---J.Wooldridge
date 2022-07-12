@@ -1,0 +1,71 @@
+---
+title: "Chapter 7"
+author: "Thalles Quinaglia Liduares"
+date: '2022-07-12'
+output: html_document
+---
+
+## Exercise 7.6 
+
+```{r, warning=F, message=F}
+
+library(wooldridge)
+library(lmreg)
+library(car)
+```
+Use the data in SLEEP75.RAW for this exercise. The equation of interest is
+
+```{r}
+
+data<-wooldridge::sleep75
+
+attach(data)
+
+```
+
+**Use the data in SLEEP75.RAW for this exercise. The equation of interest is**
+
+$$sleep=\beta_0+\beta_1totwork+\beta_2educ+\beta_3age+\beta_4age^2+\beta_5yngkid+u$$
+**(i) Estimate this equation separately for men and women and report the results in the**
+**usual form. Are there notable differences in the two estimated equations?**
+
+```{r}
+
+summary(lm_men<-lm(sleep~totwrk+educ+age+agesq+yngkid, data=subset(data, male==1)))
+
+```
+
+The estimated coefficients for men equation is given by 
+
+$$\widehat{sleep}_{men}=3648.20-0.182totwork-13.05educ+7.15age-0.04age^2+60.38yngkid$$
+
+Now, for the woman case:
+
+```{r}
+summary(lm_woman<-lm(sleep~totwrk+educ+age+agesq+yngkid, data=subset(data, male==0)))
+```
+
+For woman's case, the estimated coefficients are given by
+
+$$\widehat{sleep}_{woman}=4238.72-0.139totwork-10.205educ-30.35age+0.367age^2-118.28yngkid$$
+The coefficients differ very significantly between these two categories.
+
+**(ii) Compute the Chow test for equality of the parameters in the sleep equation for**
+**men and women. Use the form of the test that adds male and the interaction terms**
+**male?totwrk, …, male?yngkid and uses the full set of observations. What are the**
+**relevant df for the test? Should you reject the null at the 5% level?**
+
+```{r}
+summary(lm_chow<-lm(sleep~totwrk+educ+age+agesq+yngkid+male+male*totwrk+male*educ
+            +male*age+male*agesq+male*yngkid))
+```
+
+```{r}
+linearHypothesis(lm_chow, c("male=0","totwrk:male=0","educ:male=0","age:male=0","agesq:male=0","yngkid:male =0"))
+```
+
+Based on the p-value of the performed hypothesis test we can reject the null that the
+coefficients between men and woman are equal at 5% level.
+
+
+
