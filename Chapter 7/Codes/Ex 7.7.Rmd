@@ -1,0 +1,65 @@
+---
+title: "Chapter 7"
+author: "Thalles Quinaglia Liduares"
+date: '2022-07-12'
+output: html_document
+---
+
+## Exercise 7.7
+
+Upload packages
+
+```{r, warning=FALSE, message=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r, warning=FALSE, message=FALSE}
+
+data<-wooldridge::wage1
+
+attach(data)
+
+```
+
+**(i) Use equation (7.18) to estimate the gender differential when educ = 12.5.**
+**Compare this with the estimated differential when educ = 0.**
+
+```{r}
+
+summary(lm1<-lm(lwage~female+educ+female*educ+exper+expersq+tenure+tenursq))
+
+```
+
+The estimated equation is expressed as follows
+
+$$\widehat{log(wage)}=0.38-0.22female+0.08educ+0.02exper-0.0005exper^2+0.031tenure-0.0005tenure-0.005female\cdot educ$$
+Holding other factors fixed, for educ=12.5, we have that
+
+$$\widehat{log(wage)}_{men}=0.08(12.5)=1%$$
+
+For woman: $$-0.22(1)+0.08(12.5)-0.005 \cdot (1) \cdot (12.5) \approx 0.72$$
+
+Hence, there's a difference between returns in terms of wage in the magnitude of 28%.
+
+**(ii) Run the regression used to obtain (7.18), but with $female \cdot(educ- 12.5)$ replacing**
+**$female \cdot educ$. How do you interpret the coefficient on female now?**
+
+```{r}
+
+v<-female*(educ-12.5)
+
+summary(lm2<-lm(lwage~female+educ+exper+expersq+v+tenure+tenursq))
+
+```
+
+**(iii) Is the coefficient on female in part (ii) statistically significant? Compare this with**
+**(7.18) and comment.**
+
+Yes, it's statistically significant at 1% level, because there's more observations 
+close to the mean value of education in the sample.
+
