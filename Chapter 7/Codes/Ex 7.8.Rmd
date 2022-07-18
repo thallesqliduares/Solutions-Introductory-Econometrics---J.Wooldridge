@@ -1,0 +1,93 @@
+---
+title: "Chapter 7"
+author: "Thalles Quinaglia Liduares"
+date: '2022-07-18'
+output: html_document
+---
+
+## Exercise 7.8 
+
+Upload packages
+
+```{r, message=FALSE, warning=FALSE}
+
+library(wooldridge)
+library(lmreg)
+
+```
+
+Upload database
+
+```{r, message=FALSE, warning=FALSE}
+
+data<-wooldridge::loanapp
+
+attach(data)
+
+```
+
+
+Use the data in LOANAPP.RAW for this exercise. The binary variable to be explained 
+is approve, which is equal to one if a mortgage loan to an individual was approved. The 
+key explanatory variable is white, a dummy variable equal to one if the applicant was 
+white. The other applicants in the data set are black and Hispanic.To test for 
+discrimination in the mortgage loan market, a linear probability model can be used:
+
+$$approve=\beta_0+\beta_1white+ u$$
+
+**(i) If there is discrimination against minorities, and the appropriate factors have been**
+**controlled for, what is the sign of $\beta_1$?**
+
+In this case, we expect a positive sign for $\beta_1$
+
+**(ii) Regress approve on white and report the results in the usual form. Interpret the**
+**coefficient on white. Is it statistically significant? Is it practically large?**
+
+```{r}
+
+summary(lm(approve~white))
+
+```
+
+The estimated equation is given by 
+
+$$\widehat{approve}=0.7+0.2white$$
+
+Hence, white people have 20% more chances of being approved in a loan request.
+
+**(iii) As controls, add the variables hrat, obrat, loanprc, unem, male, married, dep, sch,**
+**cosign, chist, pubrec, mortlat1, mortlat2, and vr. What happens to the coefficient**
+**on white? Is there still evidence of discrimination against nonwhites?**
+
+```{r}
+summary(lm(approve~hrat+obrat+loanprc+unem+male+married+dep+sch+cosign+chist+
+             pubrec+mortlat1+mortlat2+vr+white))
+```
+
+
+In this case, the coefficient of `white` reduces to 0.12 and still significant at the 1% level.
+
+**(iv) Now, allow the effect of race to interact with the variable measuring other**
+**obligations as a percentage of income (obrat). Is the interaction term significant?**
+
+```{r}
+lm4<- lm(approve~hrat+obrat+loanprc+unem+male+married+dep+sch+cosign+chist+
+             pubrec+mortlat1+mortlat2+vr+white+white*obrat)
+summary(lm4)
+```
+
+Yes, the coefficient associated to interaction term is positive and significant at the 1% level.
+
+**(v) Using the model from part (iv), what is the effect of being white on the probability**
+**of approval when obrat = 32, which is roughly the mean value in the sample?**
+**Obtain a 95% confidence interval for this effect.**
+
+
+
+$$\widehat{approve}=-0.14\cdot(1)+0.008\cdot(32) \approx 0.11$$ 
+
+```{r}
+confint(lm4,level = 0.95)
+```
+ 
+The 95% confidence interval is equal to [0.003,0.012].
