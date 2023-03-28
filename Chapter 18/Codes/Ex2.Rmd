@@ -1,0 +1,62 @@
+---
+title: "Wooldridge - Econometrics - Ch18 - Ex2"
+author: "Thalles Quinaglia Liduares"
+date: "28/03/2023"
+output: html_document
+---
+
+(i) Test for a unit root in log(invpc), including a linear time trend and two lags of 
+log(invpct). Use a 5% significance level.
+
+Upload package
+
+```{r}
+library(wooldridge)
+library(tseries)
+```
+
+Upload data
+
+```{r}
+HSEINV<-wooldridge::hseinv
+```
+
+Define variables 
+
+```{r}
+
+log_invpc <- log(HSEINV$invpc)
+d1_log_invpc <- diff(log_invpc, lag = 1)
+d2_log_invpc <- diff(log_invpc, lag = 2)
+time_trend <- 1:length(log_invpc)
+```
+ADF test
+
+```{r}
+adf.test(log_invpc, alternative = "stationary", k = 2)
+```
+
+Based on the Adf-Test, the series is stationary in level.
+
+(ii) Use the approach from part (i) to test for a unit root in log(price).
+
+Define variable
+
+```{r}
+
+log_price <- log(HSEINV$price)
+
+```
+
+ADF test
+
+```{r}
+adf.test(log_price, alternative = "stationary", k = 2)
+```
+
+(iii) Given the outcomes in parts (i) and (ii), does it make sense to test for cointegration 
+between log(invpc) and log(price)?
+
+Based on the Adf-Test, the log_price variable, shows an unit-root, hence is non-stationary.
+
+Yes, it makes sense to test for cointegration between log(invpc) and log(price) since they are both non-stationary variables. Cointegration occurs when two or more non-stationary variables are related through a stationary linear combination, which means that they share a long-run relationship. Therefore, if log(invpc) and log(price) are cointegrated, it suggests that they have a long-term equilibrium relationship that can be modeled using a vector error correction model (VECM).
