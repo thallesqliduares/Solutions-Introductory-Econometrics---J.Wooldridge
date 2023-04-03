@@ -1,0 +1,75 @@
+---
+title: 'An introduction to econometrics - J.Wooldridge - Ch14 - Ex3'
+author: "Thalles Quinaglia Liduares"
+date: "03/04/2023"
+output: html_document
+---
+
+For this exercise, we use JTRAIN.RAW from wooldridge r package to determine the effect of the job training grant on hours of job training per employee. The basic model for the three years is
+
+$$hrsemp_{it}=\beta_0+\delta_{1}d88_t+\delta_{2}d89_{t}+\beta_{1}grant_{it}+\beta_{2}grant_{i,t-1}+\beta_3log(employ_{it})+a_i+u_{it}$$
+
+(i) Estimate the equation using fixed effects. How many firms are used in the FE 
+estimation? How many total observations would be used if each firm had data on 
+all variables (in particular, hrsemp) for all three years?
+
+Upload package 
+
+```{r}
+library(wooldridge)
+library(plm)
+```
+
+Upload data
+
+```{r}
+data<-wooldridge::jtrain
+```
+Create firm-level means for the time-varying variables
+```{r}
+
+firm_means <- aggregate(cbind(hrsemp, grant) ~ fcode, data, FUN = mean)
+```
+
+Estimate fixed-effects model
+
+```{r}
+
+fe_model <- plm(hrsemp ~ d88 + d89 + grant + lag(grant) + log(employ), data, index = c("fcode", "year"),
+                model = "within")
+
+summary(fe_model)
+```
+
+Number of firms 
+
+```{r}
+n_firms <- length(unique(data$fcode))
+n_firms
+```
+(ii) Interpret the coefficient on grant and comment on its significance.
+
+
+The coefficient on grant is 38.29, which means that a $1,000 increase in job training grant is associated with a 38.29 increase in hours of job training per employee, on average. This suggests that job training grants have a positive effect on the amount of job training provided by firms.
+
+The coefficient is statistically significant with a p-value of less than 0.01, indicating that the effect of job training grants on hours of job training is unlikely to be due to chance.
+
+
+(iii) Is it surprising that $grant_{-1}$ is insignificant? Explain.
+
+The coefficient on grant_{-1} (the lagged value of grant) is 9.28 with a p-value of 0.257, which is not statistically significant at conventional levels.
+
+One possible explanation for this result is that job training grants may have an immediate effect on the amount of job training provided by firms, rather than a delayed effect. In other words, firms may respond to the receipt of a grant by increasing their investment in job training in the same period, rather than waiting until the next period to do so. If this is the case, then the effect of the current period's grant on job training would be captured by the coefficient on grant, and there would be little or no additional effect of the lagged grant.
+
+Another possible explanation is that the effect of job training grants on job training is short-lived, and firms do not continue to invest in job training at the same level in the following period. If this is the case, then the lagged grant may have a smaller effect on job training than the current grant.
+
+In any case, the insignificance of grant_{-1} should be interpreted in light of the overall model fit and the significance of the other variables. Even if the lagged grant is not significant, the current grant and other variables in the model may still be important determinants of job training.
+
+(iv) Do larger firms provide their employees with more or less training, on average? 
+How big are the differences? (For example, if a firm has 10% more employees, 
+what is the change in average hours of training?)
+
+
+The coefficient on log(employ) is negative -1.4169 and is not statistically significant, which  not suggests that larger firms provide their employees with less training, on average.
+
+
