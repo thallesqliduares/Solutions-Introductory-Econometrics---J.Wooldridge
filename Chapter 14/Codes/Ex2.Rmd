@@ -1,0 +1,93 @@
+---
+title: "An introduction to econometrics - J.Wooldridge - Ch14 - Ex2"
+author: "Thalles Quinaglia Liduares"
+date: "03/04/2023"
+output: html_document
+---
+
+Use CRIME4.RAW  for this exercise.
+
+(i) Reestimate the unobserved effects model for crime in Example 13.9 but use fixed 
+effects rather than differencing. Are there any notable sign or magnitude changes 
+in the coefficients? What about statistical significance?
+
+Upload package
+
+```{r}
+library(wooldridge)
+library(plm)
+```
+
+Upload data
+
+```{r}
+data<-wooldridge::crime4
+```
+### Fixed effects regression
+```{r}
+
+crime_fe <- plm(crmrte ~ prbarr + prbconv + prbpris + avgsen + polpc, data = crime4, index = c("county","year"),
+                model = "within")
+
+```
+
+### Results
+
+```{r}
+summary(crime_fe)
+```
+
+
+(ii) Add the logs of each wage variable in the data set and estimate the model by fixed 
+effects. How does including these variables affect the coefficients on the criminal 
+justice variables in part (i)?
+
+### Add the logs of each wage variable
+
+### Estimate the fixed effects model with logged wage variables
+
+```{r}
+
+crime_fe_logwage <- plm(crmrte ~ prbarr + prbconv + prbpris + avgsen + polpc  
+                            +data$lwcon  
+                            +data$lwfed
+                            +data$lwfir
+                            +data$lwloc
+                            +data$lwmfg
+                            +data$lwser
+                            +data$lwsta
+                            +data$lwtrd
+                            +data$lwtuc, 
+                            data = crime4, 
+                            index = c("county", "year"),
+                            model = "within")
+
+
+```
+### Results
+```{r}
+summary(crime_fe_logwage)
+```
+
+
+(iii) Do the wage variables in part (ii) all have the expected sign? Explain. Are they 
+jointly significant?
+
+### Test joint significance of wage variables
+
+```{r}
+
+library(car)
+linearHypothesis(crime_fe_logwage, c("data$lwcon=0"  
+                            ,"data$lwfed=0"
+                            ,"data$lwfir=0"
+                            ,"data$lwloc=0"
+                            ,"data$lwmfg=0"
+                            ,"data$lwser=0"
+                            ,"data$lwsta=0"
+                            ,"data$lwtrd=0"
+                            ,"data$lwtuc=0"), vcov = vcovHC(crime_fe_logwage, type = "HC1"))
+```
+
+
+The test statistic indicates that we can reject the null hypothesis and conclude that the wage variables are jointly significant at conventional levels.
